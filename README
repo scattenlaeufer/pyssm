@@ -1,0 +1,15 @@
+PySSM
+
+written by Björn Guth at Klinik für Psychiatrie, Psychosomatik und 
+Psychotherapie des Kinder- und Jugendalters at Universtitätsklinikum 
+Aachen
+
+version 0.1
+
+PySSM is a small game to teach children eight syllables needed for a
+study on the early symptoms of dyslexia
+
+Dependencies:
+    python 2.7 (www.python.org)
+    pygame (www.pygame.org)
+    Ogg Vorbis (www.vorbis.com)
