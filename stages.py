@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import pygame, sys, random
+import pygame, sys, random, Log_Handler
 from pygame.locals import *
 from engines import OneOutOfTwo
 
@@ -252,7 +252,7 @@ class Stage:
 
 class Stage_A(Stage):
 
-    def __init__(self):
+    def __init__(self,log):
 
         Stage.__init__(self)
 
@@ -288,7 +288,7 @@ class Stage_A(Stage):
         self.teach_syllable('images/syllables/LO.gif',self.lo['1'])
         
         self.play_instruction('audio/instr/instr3.ogg')
-        self.test_syllable('lo',self.lo,1)
+        miss_teach = self.test_syllable('lo',self.lo,6)
 
         #teach and test MA
         self.play_instruction('audio/instr/instr4.ogg')
@@ -298,9 +298,7 @@ class Stage_A(Stage):
         self.teach_syllable('images/syllables/MA.gif',self.ma['1'])
 
         self.play_instruction('audio/instr/instr3.ogg')
-        self.test_syllable('ma',self.ma,1)
-   
-#        print self.miss
+        miss_teach += self.test_syllable('ma',self.ma,6)
 
         image = pygame.image.load('images/bg/bg_smiley.jpg')
         self.draw(image)
@@ -341,7 +339,9 @@ class Stage_A(Stage):
         bg_stage = pygame.image.load('images/bg/bg_landscape.jpg')
         
         stage = OneOutOfTwo(self.surface,bg_stage,sprites,syllables,syllable_images,syllable_sound)
-        print(stage.start())
+        miss_test = stage.start()
+
+        log.add('A',miss_teach,miss_test)
 
         image = pygame.image.load('images/bg/bg_wave.jpg')
         self.draw(image)
