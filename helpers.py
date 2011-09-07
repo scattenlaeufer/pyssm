@@ -21,5 +21,7 @@ class Log_Handler:
     def __str__(self):
         return self.log
 
-    def get_stage(self):
-        return Stage_A
+    def save(self):
+
+        with open('pyssm.log', mode='w') as log_file:
+            log_file.write(self.log)

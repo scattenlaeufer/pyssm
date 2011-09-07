@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import pygame, sys, random, Log_Handler
+import pygame, sys, random
 from pygame.locals import *
 from engines import OneOutOfTwo
+from helpers import Log_Handler
 
 
 #generic form of a stage. all actual stages should inherit from this
