@@ -32,31 +32,21 @@ class Log_Handler:
 
         entrys = string.split(self.log,'\n')
         if len(entrys) == 1:
-            return ('A',False,False)
+            return ('A',False)
 
         last = string.split(entrys[len(entrys)-1],'\t')
 
-        if last[1] == 'A':
-            if int(last[2]) > 6:
-                teach = False
-            else:
-                teach =True
+        if int(last[2]) == 0:
+            teach = False
         else:
-            if int(last[2]) > 3:
-                teach = False
-            else:
-                teach =True
+            teach = True
 
-        if int(last[3]) > 3:
+        if int(last[3]) == 0:
             test = False
         else:
             test = True
 
-        if (not test or not teach) and len(entrys) > 2:
-            lastbutone = string.split(entrys[len(entrys)-2],'\t')
-            if lastbutone[1] == last[1]:
-                return None
-            else:
-                return (last[1],teach,test)
+        if not test or not teach:
+            return (last[1],True)
         else:
-            return (last[1],teach,test)
+            return (last[1],False)
