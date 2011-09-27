@@ -76,6 +76,34 @@ class Stage:
             self.mainClock.tick(20)
 
 
+    def stop(self):
+        
+        self.surface.fill(self.bg_blank)
+        text = self.font1.render('Bitte nehmen Sie Kontakt mit uns auf.',True,(0,0,0))
+        self.surface.blit(text,(self.position_center_width(text),self.position_center_height(text)))
+        pygame.display.update()
+
+        pygame.event.clear()
+        bla = True
+        while bla:
+            for event in pygame.event.get():
+                if event.type == KEYDOWN:
+                    bla = False
+            self.mainClock.tick(10)
+
+        pygame.quit()
+        sys.exit()
+        
+
+    def end(self):
+        
+        image = pygame.image.load('images/bg/bg_wave.jpg')
+        self.surface.blit(image,(0,0))
+        pygame.display.update()
+        self.play_instruction('audio/final/final1.ogg',False)
+        pygame.quit()
+        sys.exit()
+
     def load_sound(self,name):
         
         class NoneSound:
@@ -278,7 +306,7 @@ class Stage:
 
 class Stage_A(Stage):
 
-    def __init__(self,log,teach=False,test=False):
+    def __init__(self,log,teach=False,test=False,rep=False):
        
         if teach or test:
             Stage.__init__(self,False)
@@ -287,37 +315,70 @@ class Stage_A(Stage):
 
         #load sounds
         if not (teach and test):
-            lo = self.load_syllable_sound('lo')
-            ma = self.load_syllable_sound('ma')
+            self.init_syllable_sound()
+            repitition = 0
 
-        if not (teach or test):
-            #edit title for modul A
-            self.start('Modul A','audio/instr/instr1.ogg')
+        if not rep:
+            if not (teach or test):
+                #edit title for modul A
+                self.start('Modul A','audio/instr/instr1.ogg')
 
-            #teach and test LO
-            self.teach_syllable('images/syllables/LO.gif',self.load_sound('audio/pres/preslo.ogg'))
-            self.play_instruction('audio/instr/instr2.ogg')
-            self.teach_syllable('images/syllables/LO.gif',lo['1'])
+                #teach and test LO
+                self.teach_syllable('images/syllables/LO.gif',self.load_sound('audio/pres/preslo.ogg'))
+                self.play_instruction('audio/instr/instr2.ogg')
+                self.teach_syllable('images/syllables/LO.gif',self.lo['1'])
+                
+                self.play_instruction('audio/instr/instr3.ogg')
+
+            if not test:
+                miss = 0
+                miss = self.test_syllable('lo',self.lo,6)
+                if miss > 2:
+                    miss = 0
+                    miss = self.test_syllable('lo',self.lo,6)
+                    repitition += 1
+                    if miss > 2:
+                        log.add('A',0,-1)
+                        log.save()
+                        self.stop()
+
+
             
-            self.play_instruction('audio/instr/instr3.ogg')
+            if not (teach or test):
+                #teach and test MA
+                self.play_instruction('audio/instr/instr4.ogg')
 
-        if not test:
-            miss_teach = self.test_syllable('lo',lo,6)
-        
-        if not (teach or test):
-            #teach and test MA
-            self.play_instruction('audio/instr/instr4.ogg')
+                self.teach_syllable('images/syllables/MA.gif',self.load_sound('audio/pres/presma.ogg'))
+                self.play_instruction('audio/instr/instr2.ogg')
+                self.teach_syllable('images/syllables/MA.gif',self.ma['1'])
 
-            self.teach_syllable('images/syllables/MA.gif',self.load_sound('audio/pres/presma.ogg'))
-            self.play_instruction('audio/instr/instr2.ogg')
-            self.teach_syllable('images/syllables/MA.gif',ma['1'])
+                self.play_instruction('audio/instr/instr3.ogg')
 
-            self.play_instruction('audio/instr/instr3.ogg')
+            if not test:
+                miss = 0
+                miss = self.test_syllable('ma',self.ma,6)
+                if miss > 2:
+                    miss = 0
+                    repitition += 1
+                    miss = self.test_syllable('ma',self.ma,6)
+                    if miss > 2:
+                        log.add('A',0,-1)
+                        log.save()
+                        self.stop()
+                res_teach = 1
+                
+                if repitition == 2:
+                    log.add('A',0,-1)
+                    log.sale()
+                    self.end()
 
-        if not test:
-            miss_teach += self.test_syllable('ma',ma,6)
+            else:
+                res_teach = -1
         else:
-            miss_teach = -1
+            res_teach = -1
+            self.start('Modul R','audio/instr/instr7.ogg')
+            self.teach_syllable('images/syllables/LO.gif',self.load_sound('audio/pres/preslo.ogg'))
+            self.teach_syllable('images/syllables/MA.gif',self.load_sound('audio/pres/presma.ogg'))
 
         if not (teach or test):
             image = pygame.image.load('images/bg/bg_smiley.jpg')
@@ -332,37 +393,56 @@ class Stage_A(Stage):
             syllables = {'lo':6,'ma':6}
             syllable_sound = {}
             syllable_images = {}
-            syllable_sound['lo'] = lo
+            syllable_sound['lo'] = self.lo
             syllable_images['lo'] = {}
             syllable_images['lo']['l'] = pygame.image.load('images/syllables/lo_left_trans.gif')
             syllable_images['lo']['r'] = pygame.image.load('images/syllables/lo_right_trans.gif')        
-            syllable_sound['ma'] = ma
+            syllable_sound['ma'] = self.ma
             syllable_images['ma'] = {}
             syllable_images['ma']['l'] = pygame.image.load('images/syllables/ma_left_trans.gif')
             syllable_images['ma']['r'] = pygame.image.load('images/syllables/ma_right_trans.gif')
 
             sprites = {}
             sprites['dog'] = {}
-            sprites['dog']['l'] = pygame.image.load('images/stage_a/dog_l.gif')
-            sprites['dog']['r'] = pygame.image.load('images/stage_a/dog_r.gif')
+            sprites['dog']['r'] = pygame.image.load('images/stage_a/dog_l.gif')
+            sprites['dog']['l'] = pygame.image.load('images/stage_a/dog_r.gif')
             sprites['duck'] = {}
-            sprites['duck']['l'] = pygame.image.load('images/stage_a/duck_l.gif')
-            sprites['duck']['r'] = pygame.image.load('images/stage_a/duck_r.gif')
+            sprites['duck']['r'] = pygame.image.load('images/stage_a/duck_l.gif')
+            sprites['duck']['l'] = pygame.image.load('images/stage_a/duck_r.gif')
             sprites['mouse'] = {}
-            sprites['mouse']['l'] = pygame.image.load('images/stage_a/mouse_l.gif')
-            sprites['mouse']['r'] = pygame.image.load('images/stage_a/mouse_r.gif')
+            sprites['mouse']['r'] = pygame.image.load('images/stage_a/mouse_l.gif')
+            sprites['mouse']['l'] = pygame.image.load('images/stage_a/mouse_r.gif')
             sprites['pig'] = {}
-            sprites['pig']['l'] = pygame.image.load('images/stage_a/pig_l.gif')
-            sprites['pig']['r'] = pygame.image.load('images/stage_a/pig_r.gif')
+            sprites['pig']['r'] = pygame.image.load('images/stage_a/pig_l.gif')
+            sprites['pig']['l'] = pygame.image.load('images/stage_a/pig_r.gif')
 
             bg_stage = pygame.image.load('images/bg/bg_landscape.jpg')
             
             stage = OneOutOfTwo(self.surface,bg_stage,sprites,syllables,syllable_images,syllable_sound)
-            miss_test = stage.start(12)
-        else:
-            miss_test = -1
 
-        log.add('A',miss_teach,miss_test)
+            miss = 0
+            miss = stage.start(12)
+            if miss > 2:
+                if repitition == 0:
+                    miss = 0
+                    miss = stage.start(12)
+                    if miss > 2:
+                        log.add('A',res_teach,0)
+                        log.save()
+                        if rep:
+                            self.stop()
+                        else:
+                            self.end()
+                else:
+                    log.add('A',res_teach,0)
+                    log.save()
+                    self.end()
+            res_test = 1
+                        
+        else:
+            res_test = -1
+
+        log.add('A',res_teach,res_test)
 
         if not (teach or test):
             image = pygame.image.load('images/bg/bg_wave.jpg')
@@ -370,9 +450,13 @@ class Stage_A(Stage):
             self.play_instruction('audio/final/final1.ogg',False)
 
 
+    def init_syllable_sound(self):
+        self.lo = self.load_syllable_sound('lo')
+        self.ma = self.load_syllable_sound('ma')
+
 class Stage_U(Stage):
 
-    def __init__(self,log,teach=False,test=False):
+    def __init__(self,log,teach=False,test=False,rep=False):
        
         if teach or test:
             Stage.__init__(self,False)
@@ -385,18 +469,32 @@ class Stage_U(Stage):
             ke = self.load_syllable_sound('ke')
             bu = self.load_syllable_sound('bu')
 
-        if not (teach or test):
-            self.start('Modul U','audio/instr/instr9.ogg')
+        if not rep:
+            if not (teach or test):
+                self.start('Modul U','audio/instr/instr9.ogg')
 
-            self.teach_syllable('images/syllables/BU.gif',self.load_sound('audio/pres/presbu.ogg'))
-            self.play_instruction('audio/instr/instr2.ogg')
-            self.teach_syllable('images/syllables/BU.gif',bu['1'])
-            self.play_instruction('audio/instr/instr3.ogg')
+                self.teach_syllable('images/syllables/BU.gif',self.load_sound('audio/pres/presbu.ogg'))
+                self.play_instruction('audio/instr/instr2.ogg')
+                self.teach_syllable('images/syllables/BU.gif',bu['1'])
+                self.play_instruction('audio/instr/instr3.ogg')
 
-        if not test:
-            miss_teach = self.test_syllable('bu',bu,6)
+            if not test:
+                miss_teach = self.test_syllable('bu',bu,6)
+            else:
+                miss_teach = -1
+
+            if not (teach or test):
+                self.play_instruction('audio/misc/repeat.ogg')
+                self.teach_syllable('images/syllables/LO.gif',self.load_sound('audio/pres/preslo.ogg'))
+                self.teach_syllable('images/syllables/MA.gif',self.load_sound('audio/pres/presma.ogg'))
+                self.teach_syllable('images/syllables/KE.gif',self.load_sound('audio/pres/preske.ogg'))
         else:
             miss_teach = -1
+            self.start('Modul C','audio/instr/instr7.ogg')
+            self.teach_syllable('images/syllables/LO.gif',self.load_sound('audio/pres/preslo.ogg'))
+            self.teach_syllable('images/syllables/MA.gif',self.load_sound('audio/pres/presma.ogg'))
+            self.teach_syllable('images/syllables/KE.gif',self.load_sound('audio/pres/preske.ogg'))
+            self.teach_syllable('images/syllables/BU.gif',self.load_sound('audio/pres/presbu.ogg'))
 
         if not (test or teach):
             image = pygame.image.load('images/bg/underwater.gif')
@@ -426,23 +524,23 @@ class Stage_U(Stage):
 
             sprites = {}
             sprites['f1'] = {}
-            sprites['f1']['r'] = pygame.image.load('images/stage_u/fish1_R.gif')
-            sprites['f1']['l'] = pygame.image.load('images/stage_u/fish1_L.gif')
+            sprites['f1']['l'] = pygame.image.load('images/stage_u/fish1_R.gif')
+            sprites['f1']['r'] = pygame.image.load('images/stage_u/fish1_L.gif')
             sprites['f2'] = {}
-            sprites['f2']['r'] = pygame.image.load('images/stage_u/fish2_R.gif')
-            sprites['f2']['l'] = pygame.image.load('images/stage_u/fish2_L.gif')
+            sprites['f2']['l'] = pygame.image.load('images/stage_u/fish2_R.gif')
+            sprites['f2']['r'] = pygame.image.load('images/stage_u/fish2_L.gif')
             sprites['f3'] = {}
-            sprites['f3']['r'] = pygame.image.load('images/stage_u/fish3_R.gif')
-            sprites['f3']['l'] = pygame.image.load('images/stage_u/fish3_L.gif')
+            sprites['f3']['l'] = pygame.image.load('images/stage_u/fish3_R.gif')
+            sprites['f3']['r'] = pygame.image.load('images/stage_u/fish3_L.gif')
             sprites['f4'] = {}
-            sprites['f4']['r'] = pygame.image.load('images/stage_u/fish4_R.gif')
-            sprites['f4']['l'] = pygame.image.load('images/stage_u/fish4_L.gif')
+            sprites['f4']['l'] = pygame.image.load('images/stage_u/fish4_R.gif')
+            sprites['f4']['r'] = pygame.image.load('images/stage_u/fish4_L.gif')
             sprites['f5'] = {}
-            sprites['f5']['r'] = pygame.image.load('images/stage_u/fish5_R.gif')
-            sprites['f5']['l'] = pygame.image.load('images/stage_u/fish5_L.gif')
+            sprites['f5']['l'] = pygame.image.load('images/stage_u/fish5_R.gif')
+            sprites['f5']['r'] = pygame.image.load('images/stage_u/fish5_L.gif')
             sprites['f6'] = {}
-            sprites['f6']['r'] = pygame.image.load('images/stage_u/fish6_R.gif')
-            sprites['f6']['l'] = pygame.image.load('images/stage_u/fish6_L.gif')
+            sprites['f6']['l'] = pygame.image.load('images/stage_u/fish6_R.gif')
+            sprites['f6']['r'] = pygame.image.load('images/stage_u/fish6_L.gif')
 
             bg_stage = pygame.image.load('images/bg/underwater.gif')
             

@@ -13,14 +13,14 @@ def normal(teach,test):
         print('du bist dumm!')
     else:
         if result[0] == 'A':
-            if not result[1] or not result[2]:
-                stage = Stage_A(log,teach,test)
+            if result[1]:
+                stage = Stage_A(log,teach,test,True)
             else:
                 stage = Stage_U(log,teach,test)
         else:
             if result[0] == 'U':
-                if not result[1] or not result[2]:
-                    stage = Stage_U(log,teach,test)
+                if result[1]:
+                    stage = Stage_U(log,teach,test,True)
                 else:
                     print('Du bist durch!')
 
@@ -45,18 +45,22 @@ else:
 
     test = False
     teach = False
+    rep = False
     if '--test' in sys.argv:
         test = True
 
     if '--teach' in sys.argv:
         teach = True
 
+    if '--rep' in sys.argv:
+        rep = True
+
     if '-s' in sys.argv:
         start = sys.argv[sys.argv.index('-s')+1]
         if start == 'a':
-            stage = Stage_A(log,teach,test)
+            stage = Stage_A(log,teach,test,rep)
         if start == 'u':
-            stage = Stage_U(log,teach,test)
+            stage = Stage_U(log,teach,test,rep)
     else:
         normal(teach,test)
     
