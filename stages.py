@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import pygame, sys, random
+import pygame, sys, random, time
 from pygame.locals import *
 from engines import OneOutOfTwo
 from helpers import Log_Handler
@@ -22,7 +22,7 @@ class Stage:
         self.windowwidth = 1024
         self.windowheight = 768
         self.curser_unvisible = False
-#        info = pygame.display.Info()
+#        info = pygame.display.Insfo()
 #        self.desktopwidth = info.current_w
 #        self.desktopheight = info.current_h
 #        print(str(self.desktopwidth)+' '+str(self.desktopheight))
@@ -213,6 +213,8 @@ class Stage:
         sound.play()
 
         im = pygame.image.load(image)
+        dimension = (self.windowwidth/3,self.transform_height(im,self.windowwidth/3))
+        im = pygame.transform.scale(im,dimension)
         self.surface.blit(im,(self.position_center_width(im),self.position_center_height(im)))
         pygame.display.update()
         pygame.time.wait(3000)
@@ -249,6 +251,7 @@ class Stage:
 
             pygame.display.update()
             dic[str(random.randint(1,3))].play()
+            time_a = time.time()
 
             key_pressed = False
             press = 0
@@ -259,13 +262,16 @@ class Stage:
 
                     if event.type == KEYDOWN:
                         if event.key == ord('u'):
+                            time_b = time.time()
                             press = 1
                             key_pressed = True
                         if event.key == ord('d'):
+                            time_b = time.time()
                             press = 2
                             key_pressed = True
 
                 if press == correct and key_pressed:
+                    print('resp_time = {}'.format(time_b-time_a))
                     dic['pos'+str(random.randint(1,4))].play()
                     self.surface.fill(self.bg_blank)
                     if correct == 1:
@@ -297,8 +303,10 @@ class Stage:
                     pygame.display.update()
                     dic[str(random.randint(1,3))].play()
                     pygame.event.clear()
-
+                
                 self.mainClock.tick(40)
+
+            pygame.time.wait(500)
 
         return miss
 
@@ -479,9 +487,19 @@ class Stage_U(Stage):
                 self.play_instruction('audio/instr/instr3.ogg')
 
             if not test:
-                miss_teach = self.test_syllable('bu',bu,6)
+                miss = 0
+                miss = self.test_syllable('bu',bu,8)
+                if miss > 2:
+                    miss = 0
+                    miss = self.test_syllable('bu',bu,8)
+                    repitition += 1
+                    if miss > 2:
+                        log.add('U',0,-1)
+                        log.save()
+                        self.stop()
+                res_teach = 1
             else:
-                miss_teach = -1
+                res_teach = -1
 
             if not (teach or test):
                 self.play_instruction('audio/misc/repeat.ogg')
@@ -545,11 +563,25 @@ class Stage_U(Stage):
             bg_stage = pygame.image.load('images/bg/underwater.gif')
             
             stage = OneOutOfTwo(self.surface,bg_stage,sprites,syllables,syllable_images,syllable_sound)
-            miss_test = stage.start(15)
+            miss = 0
+            miss = stage.start(15)
+            if miss > 3:
+                miss = 0
+                miss = stage.start(15)
+                if miss > 3:
+                    if rep:
+                        log.add('U',res_teach,0)
+                        log.save()
+                        self.stop()
+                    else:
+                        log.add('U',res_teach,0)
+                        log.save()
+                        self.end()
+            res_test = 1
         else:
-            miss_test = -1
+            res_test = -1
 
-        log.add('U',miss_teach,miss_test)
+        log.add('U',res_teach,res_test)
         
         if not (teach or test):
             image = pygame.image.load('images/bg/bg_wave.jpg')

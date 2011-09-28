@@ -32,7 +32,7 @@ class Log_Handler:
 
         entrys = string.split(self.log,'\n')
         if len(entrys) == 1:
-            return ('A',False)
+            return ('0',False)
 
         last = string.split(entrys[len(entrys)-1],'\t')
 

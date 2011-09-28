@@ -12,6 +12,7 @@ class Engine:
         self.random_order = random_order
         self.order = order
         self.mainClock = pygame.time.Clock()
+        self.curser_unvisible = False
 
         self.syllable_images = syllable_images
         self.syllables = syllables.keys()
@@ -22,6 +23,12 @@ class Engine:
 
         for syllable in self.syllables:
             self.syllables_called[syllable] = 0
+
+
+    def toggle_fullscreen(self):
+
+        pygame.display.toggle_fullscreen()
+        self.curser_unvisible = pygame.mouse.set_visible(self.curser_unvisible)
 
 
     def standart_event(self,event):
@@ -103,12 +110,12 @@ class Engine:
 
     def draw_syllable_left(self,syllable):
 
-        self.surface.blit(syllable,(50,300))
+        self.surface.blit(syllable,(150,300))
 
 
     def draw_syllable_right(self,syllable):
 
-        self.surface.blit(syllable,(self.surface.get_size()[0]-syllable.get_size()[0]-50,300))
+        self.surface.blit(syllable,(self.surface.get_size()[0]-syllable.get_size()[0]-150,300))
 
 
     def choose_two(self,source):

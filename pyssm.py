@@ -9,8 +9,8 @@ print('ssm training version 0.1\nwirtten by Björn Guth')
 
 def normal(teach,test):
     result = log.analyze()
-    if result == None:
-        print('du bist dumm!')
+    if result[0] == '0':
+        stage = Stage_A(log,teach,test)
     else:
         if result[0] == 'A':
             if result[1]:
