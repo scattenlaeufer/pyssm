@@ -3,7 +3,9 @@
 import pygame, sys, random, time
 from pygame.locals import *
 from engines import OneOutOfTwo
-from helpers import Log_Handler
+from helpers.log import Log_Handler
+from helpers.log import Trail_Logger
+from helpers import Stop_Watch
 
 
 #generic form of a stage. all actual stages should inherit from this
@@ -231,6 +233,8 @@ class Stage:
 	def test_syllable(self,syllable,dic,n=6):
 
 		miss = 0
+		sw = Stop_Watch()
+
 		for i in range(n):
 			self.surface.fill(self.bg_blank)
 			correct = random.randint(1,2)
@@ -251,7 +255,7 @@ class Stage:
 
 			pygame.display.update()
 			dic[str(random.randint(1,3))].play()
-			time_a = time.time()
+			sw.start()
 
 			key_pressed = False
 			press = 0
@@ -262,16 +266,16 @@ class Stage:
 
 					if event.type == KEYDOWN:
 						if event.key == ord('u'):
-							time_b = time.time()
+							sw.stop()
 							press = 1
 							key_pressed = True
 						if event.key == ord('d'):
-							time_b = time.time()
+							sw.stop()
 							press = 2
 							key_pressed = True
 
 				if press == correct and key_pressed:
-					print('resp_time = {}'.format(time_b-time_a))
+					print(sw)
 					dic['pos'+str(random.randint(1,4))].play()
 					self.surface.fill(self.bg_blank)
 					if correct == 1:
@@ -283,6 +287,7 @@ class Stage:
 					pygame.event.clear()
 					break
 				if press != correct and key_pressed:
+					print(sw)
 					key_pressed = False
 					dic['neg'+str(random.randint(1,2))].play()
 					self.surface.fill(self.bg_blank)
@@ -302,6 +307,7 @@ class Stage:
 						self.draw_left(distr)
 					pygame.display.update()
 					dic[str(random.randint(1,3))].play()
+					sw.start()
 					pygame.event.clear()
 				
 				self.mainClock.tick(40)

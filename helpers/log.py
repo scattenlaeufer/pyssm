@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-import time
-import string
+import time, string, os
 
 class Log_Handler:
 
@@ -50,3 +48,35 @@ class Log_Handler:
 			return (last[1],True)
 		else:
 			return (last[1],False)
+
+
+class Trail_Logger:
+
+	def __init__(self,top):
+		self.log = top
+
+	def __str__(self):
+		return self.log
+
+	def add(self,line):
+		self.log += '\n'
+		for i in line:
+			self.log += i + '\t'
+	
+	def save(self,title):
+
+		if not os.path.isdir('trail_log'):
+			os.mkdir('trail_log')
+		
+		title = 'trail_log/' + title
+		if os.path.isfile(title):
+			i = 2
+			while True:
+				if not os.path.isfile(title+'_'+str(i)):
+					break
+				i += 1
+			title = title + '_' + str(i)
+
+		with open(title, mode='w') as log_file:
+			log_file.write(self.log)
+

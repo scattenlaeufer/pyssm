@@ -1,7 +1,7 @@
 #!/usr/bin/python2
 # -*- coding: utf-8 -*-
 import pygame, sys, time
-from helpers import Log_Handler
+from helpers.log import Log_Handler
 from pygame.locals import *
 from stages import Stage_A, Stage_U
 

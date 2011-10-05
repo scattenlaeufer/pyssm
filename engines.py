@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import pygame, random, sys
+from helpers import Stop_Watch
 from pygame.locals import *
 
 class Engine:
@@ -162,6 +163,8 @@ class OneOutOfTwo(Engine):
 
 	def start(self,n=10):
 
+		sw = Stop_Watch()
+
 		for i in range(n):
 			size = self.surface.get_size()
 			self.bg = pygame.transform.scale(self.bg,size)
@@ -189,6 +192,7 @@ class OneOutOfTwo(Engine):
 			pygame.display.update()
 
 			self.syllable_sounds[self.syllables[syllable[correct]]][str(random.randint(1,3))].play()
+			sw.start()
 
 			key_pressed = False
 			press = 0
@@ -200,9 +204,11 @@ class OneOutOfTwo(Engine):
 					if event.type == KEYDOWN:
 						try:
 							if self.left.find(chr(event.key))>= 0:
+								sw.stop()
 								press = 0
 								key_pressed = True
 							if self.right.find(chr(event.key)) >=0:
+								sw.stop()
 								press = 1
 								key_pressed = True
 						except UnicodeDecodeError:
@@ -210,6 +216,7 @@ class OneOutOfTwo(Engine):
 
 				
 				if press == correct and key_pressed:
+					print(sw)
 					self.syllable_sounds[self.syllables[syllable[correct]]]['pos'+str(random.randint(1,4))].play()
 					self.surface.blit(self.bg,(0,0))
 					self.draw_sprite(sprite)
@@ -223,6 +230,7 @@ class OneOutOfTwo(Engine):
 					break
 
 				if press != correct and key_pressed:
+					print(sw)
 					key_pressed = False
 					self.syllable_sounds[self.syllables[syllable[correct]]]['neg'+str(random.randint(1,2))].play() 
 					self.surface.blit(self.bg,(0,0))
@@ -241,6 +249,7 @@ class OneOutOfTwo(Engine):
 						self.draw_syllable_left(self.syllable_images[self.syllables[syllable[0]]]['l'])
 					pygame.display.update()
 					self.syllable_sounds[self.syllables[syllable[correct]]][str(random.randint(1,3))].play()
+					sw.start()
 					pygame.event.clear()
 
 				self.mainClock.tick(40)
