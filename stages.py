@@ -230,10 +230,12 @@ class Stage:
 		return int(width * ratio)
 
 
-	def test_syllable(self,syllable,dic,n=6):
+	def test_syllable(self,syllable,dic,n=8):
 
 		miss = 0
 		sw = Stop_Watch()
+		log = Trail_Logger('trail_nr\tkey_pressed\tresponse\tresponse_time')
+		m = 1
 
 		for i in range(n):
 			self.surface.fill(self.bg_blank)
@@ -276,6 +278,7 @@ class Stage:
 
 				if press == correct and key_pressed:
 					print(sw)
+					log.add([m,press,int(press==correct),sw.get_time()])
 					dic['pos'+str(random.randint(1,4))].play()
 					self.surface.fill(self.bg_blank)
 					if correct == 1:
@@ -287,7 +290,7 @@ class Stage:
 					pygame.event.clear()
 					break
 				if press != correct and key_pressed:
-					print(sw)
+					log.add([m,press,int(press==correct),sw.get_time()])
 					key_pressed = False
 					dic['neg'+str(random.randint(1,2))].play()
 					self.surface.fill(self.bg_blank)
@@ -313,7 +316,9 @@ class Stage:
 				self.mainClock.tick(40)
 
 			pygame.time.wait(500)
+			m += 1
 
+		log.save('test_'+syllable)
 		return miss
 
 
@@ -347,7 +352,7 @@ class Stage_A(Stage):
 			if not test:
 				miss = 0
 				miss = self.test_syllable('lo',self.lo,6)
-				if miss > 2:
+				if miss > 2 and not teach:
 					miss = 0
 					miss = self.test_syllable('lo',self.lo,6)
 					repitition += 1
@@ -355,7 +360,6 @@ class Stage_A(Stage):
 						log.add('A',0,-1)
 						log.save()
 						self.stop()
-
 
 			
 			if not (teach or test):
@@ -371,11 +375,12 @@ class Stage_A(Stage):
 			if not test:
 				miss = 0
 				miss = self.test_syllable('ma',self.ma,6)
-				if miss > 2:
+				if miss > 2 and not teach:
 					miss = 0
 					repitition += 1
 					miss = self.test_syllable('ma',self.ma,6)
 					if miss > 2:
+
 						log.add('A',0,-1)
 						log.save()
 						self.stop()
@@ -436,7 +441,7 @@ class Stage_A(Stage):
 
 			miss = 0
 			miss = stage.start(12)
-			if miss > 2:
+			if miss > 2 and not test:
 				if repitition == 0:
 					miss = 0
 					miss = stage.start(12)
@@ -495,10 +500,10 @@ class Stage_U(Stage):
 			if not test:
 				miss = 0
 				miss = self.test_syllable('bu',bu,8)
-				if miss > 2:
+				if miss > 2 and not teach:
 					miss = 0
+					self.play_instruction('audio/instr/instr3.ogg')
 					miss = self.test_syllable('bu',bu,8)
-					repitition += 1
 					if miss > 2:
 						log.add('U',0,-1)
 						log.save()
@@ -571,7 +576,7 @@ class Stage_U(Stage):
 			stage = OneOutOfTwo(self.surface,bg_stage,sprites,syllables,syllable_images,syllable_sound)
 			miss = 0
 			miss = stage.start(15)
-			if miss > 3:
+			if miss > 3 and not test:
 				miss = 0
 				miss = stage.start(15)
 				if miss > 3:

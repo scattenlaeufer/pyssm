@@ -61,21 +61,20 @@ class Trail_Logger:
 	def add(self,line):
 		self.log += '\n'
 		for i in line:
-			self.log += i + '\t'
+			self.log += str(i) + '\t'
 	
-	def save(self,title):
+	def save(self,name):
 
 		if not os.path.isdir('trail_log'):
 			os.mkdir('trail_log')
 		
-		title = 'trail_log/' + title
-		if os.path.isfile(title):
-			i = 2
-			while True:
-				if not os.path.isfile(title+'_'+str(i)):
-					break
-				i += 1
-			title = title + '_' + str(i)
+		title = 'trail_log/' + name + '_'
+		i = 1
+		while True:
+			if not os.path.isfile(title+str(i)):
+				break
+			i += 1
+		title = title + '_' + str(i)
 
 		with open(title, mode='w') as log_file:
 			log_file.write(self.log)

@@ -16,3 +16,5 @@ class Stop_Watch(threading.Thread):
 	def __str__(self):
 		return str(self.t_stop - self.t_start)
 
+	def get_time(self,i=4):
+		return round(self.t_stop-self.t_start,i)
