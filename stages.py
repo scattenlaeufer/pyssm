@@ -15,6 +15,7 @@ class Stage:
 	def __init__(self,bla=True):
 		
 		self.miss = 0
+		self.instr = None
 		self.mainClock = pygame.time.Clock()
 
 		# init pygame
@@ -142,7 +143,8 @@ class Stage:
 
 	
 	def play_instruction(self,instr,clean=True):
-
+		
+		self.instr = instr
 		pygame.mixer.music.load(instr)
 		pygame.mixer.music.set_volume(1.0)
 		pygame.mixer.music.play()
@@ -234,7 +236,8 @@ class Stage:
 
 		miss = 0
 		sw = Stop_Watch()
-		log = Trail_Logger('trail_nr\tkey_pressed\tresponse\tresponse_time')
+		log = Trail_Logger('test_'+syllable)
+		log.set_top('trail_nr\tkey_pressed\tresponse\tresponse_time')
 		m = 1
 
 		for i in range(n):
@@ -275,9 +278,10 @@ class Stage:
 							sw.stop()
 							press = 2
 							key_pressed = True
+						if event.key == K_F1:
+							self.play_instruction(self.instr,False)
 
 				if press == correct and key_pressed:
-					print(sw)
 					log.add([m,press,int(press==correct),sw.get_time()])
 					dic['pos'+str(random.randint(1,4))].play()
 					self.surface.fill(self.bg_blank)
@@ -318,7 +322,7 @@ class Stage:
 			pygame.time.wait(500)
 			m += 1
 
-		log.save('test_'+syllable)
+		log.save()
 		return miss
 
 
@@ -351,17 +355,16 @@ class Stage_A(Stage):
 
 			if not test:
 				miss = 0
-				miss = self.test_syllable('lo',self.lo,6)
+				miss = self.test_syllable('lo',self.lo,8)
 				if miss > 2 and not teach:
 					miss = 0
-					miss = self.test_syllable('lo',self.lo,6)
+					miss = self.test_syllable('lo',self.lo,8)
 					repitition += 1
 					if miss > 2:
 						log.add('A',0,-1)
 						log.save()
 						self.stop()
 
-			
 			if not (teach or test):
 				#teach and test MA
 				self.play_instruction('audio/instr/instr4.ogg')
@@ -374,11 +377,11 @@ class Stage_A(Stage):
 
 			if not test:
 				miss = 0
-				miss = self.test_syllable('ma',self.ma,6)
+				miss = self.test_syllable('ma',self.ma,8)
 				if miss > 2 and not teach:
 					miss = 0
 					repitition += 1
-					miss = self.test_syllable('ma',self.ma,6)
+					miss = self.test_syllable('ma',self.ma,8)
 					if miss > 2:
 
 						log.add('A',0,-1)
