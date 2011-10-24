@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import pygame, random, sys
 from helpers import Stop_Watch
+from helpers.log import Trail_Logger
+from helpers.debug import Debugger
 from pygame.locals import *
 
 class Engine:
@@ -133,7 +135,6 @@ class Engine:
 
 		if self.syllables_called[syllable] < self.syllables_allowed[syllable]:
 			self.syllables_called[syllable] += 1
-			print(self.syllables_called)
 			return True
 		else:
 			return False
@@ -143,15 +144,19 @@ class Engine:
 
 		return self.surface.get_size()[0]/2 - item.get_size()[0]/2
 
+	def reset_syllables_called(self):
+		
+		for syllable in self.syllables:
+			self.syllables_called[syllable] = 0
+
 
 class OneOutOfTwo(Engine):
 
-	def __init__(self, surface, bg, sprites, syllables, syllable_images, syllable_sounds, random_order=True, order=None, neo=True):
-		
+	def __init__(self, log, surface, bg, sprites, syllables, syllable_images, syllable_sounds, random_order=True, order=None, neo=True):
 		Engine.__init__(self,surface,bg,syllables,syllable_sounds,syllable_images,random_order,order)
+		self.log = log
 		self.sprites = sprites
 		self.n_sprites = len(self.sprites)
-		print(self.syllables_called)
 
 		if neo:
 			self.left = u'xvlcwuiaeoüöäpzXVLCWUIAEOÜÖÄPZ'
@@ -164,6 +169,8 @@ class OneOutOfTwo(Engine):
 	def start(self,n=10):
 
 		sw = Stop_Watch()
+		self.reset_syllables_called()
+		self.log.set_top('trail_nr\tsyllable_l\tsyllable_r\tsound\tkey_pressed\tresponse\tresponsetime\tsprite')
 
 		for i in range(n):
 			size = self.surface.get_size()
@@ -177,7 +184,8 @@ class OneOutOfTwo(Engine):
 			else:
 				direction_str = 'r'
 
-			sprite = self.sprites[self.sprites.keys()[random.randint(0,self.n_sprites-1)]][direction_str]
+			sprite_str = self.sprites.keys()[random.randint(0,self.n_sprites-1)]
+			sprite = self.sprites[sprite_str][direction_str]
 
 			check = True
 			while check:
@@ -216,7 +224,8 @@ class OneOutOfTwo(Engine):
 
 				
 				if press == correct and key_pressed:
-					print(sw)
+					log_line = [i,self.syllables[syllable[0]],self.syllables[syllable[1]],self.syllables[syllable[correct]],press,int(press==correct),sw.get_time(),sprite_str]
+					self.log.add(log_line)
 					self.syllable_sounds[self.syllables[syllable[correct]]]['pos'+str(random.randint(1,4))].play()
 					self.surface.blit(self.bg,(0,0))
 					self.draw_sprite(sprite)
@@ -230,7 +239,8 @@ class OneOutOfTwo(Engine):
 					break
 
 				if press != correct and key_pressed:
-					print(sw)
+					log_line = [i,self.syllables[syllable[0]],self.syllables[syllable[1]],self.syllables[syllable[correct]],press,int(press==correct),sw.get_time(),sprite_str]
+					self.log.add(log_line)
 					key_pressed = False
 					self.syllable_sounds[self.syllables[syllable[correct]]]['neg'+str(random.randint(1,2))].play() 
 					self.surface.blit(self.bg,(0,0))

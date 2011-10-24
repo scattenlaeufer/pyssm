@@ -439,31 +439,36 @@ class Stage_A(Stage):
 			sprites['pig']['l'] = pygame.image.load('images/stage_a/pig_r.gif')
 
 			bg_stage = pygame.image.load('images/bg/bg_landscape.jpg')
-			
-			stage = OneOutOfTwo(self.surface,bg_stage,sprites,syllables,syllable_images,syllable_sound)
+
+			log_a = Trail_Logger('test_a')
+			stage = OneOutOfTwo(log_a,self.surface,bg_stage,sprites,syllables,syllable_images,syllable_sound)
 
 			miss = 0
 			miss = stage.start(12)
-			if miss > 2 and not test:
+			if miss > 2:
 				if repitition == 0:
 					miss = 0
 					miss = stage.start(12)
 					if miss > 2:
 						log.add('A',res_teach,0)
 						log.save()
+						log_a.save()
 						if rep:
 							self.stop()
 						else:
 							self.end()
 				else:
+					log_a.save()
 					log.add('A',res_teach,0)
 					log.save()
 					self.end()
 			res_test = 1
+			log_a.save()
 						
 		else:
 			res_test = -1
 
+		log_a.save()
 		log.add('A',res_teach,res_test)
 
 		if not (teach or test):
@@ -576,13 +581,15 @@ class Stage_U(Stage):
 
 			bg_stage = pygame.image.load('images/bg/underwater.gif')
 			
-			stage = OneOutOfTwo(self.surface,bg_stage,sprites,syllables,syllable_images,syllable_sound)
+			log_u = Trail_Logger('test_u')
+			stage = OneOutOfTwo(log_u,self.surface,bg_stage,sprites,syllables,syllable_images,syllable_sound)
 			miss = 0
 			miss = stage.start(15)
 			if miss > 3 and not test:
 				miss = 0
 				miss = stage.start(15)
 				if miss > 3:
+					log_u.save()
 					if rep:
 						log.add('U',res_teach,0)
 						log.save()
@@ -595,7 +602,9 @@ class Stage_U(Stage):
 		else:
 			res_test = -1
 
+		log_u.save()
 		log.add('U',res_teach,res_test)
+		log.save()
 		
 		if not (teach or test):
 			image = pygame.image.load('images/bg/bg_wave.jpg')

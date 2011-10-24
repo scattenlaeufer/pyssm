@@ -61,22 +61,28 @@ class Trail_Logger:
 					self.lines = string.split(self.log,'\n')
 					last_line = string.split(self.lines[len(self.lines)-1],'\t')
 					try:
-						self.cc = int(last_line[0]) + 1
+						self.cc = int(last_line[0])
 					except ValueError:
-						self.cc = 1
+						self.cc = 0
 			except IOError:
+				self.lines = None
 				self.log = ''
-				self.cc = 1
+				self.cc = 0
 		else:
+			self.lines = None
 			os.mkdir('trail_log')
 			self.log = ''
-			self.cc = 1
+			self.cc = 0
 
 	def set_top(self,top):
+		self.cc += 1
 		top = 'cycle_count\t'+top
-		print(top)
-		if self.lines[0] != top:
-			self.log += '\n' + top
+		if self.log == '':
+			self.log += top
+		else:
+			if self.lines[0] != top:
+				self.log += '\n' + top
+
 
 	def __str__(self):
 		return self.log
