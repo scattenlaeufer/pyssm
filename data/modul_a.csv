@@ -1,0 +1,12 @@
+1	mouse_l.gif	698	90	ma1.wav	lo_left_trans.gif	ma_right_trans.gif	/	false	true	mapos1.wav	maneg2.wav	-34
+2	pig_r.gif	-34	270	lo1.wav	ma_left_trans.gif	lo_right_trans.gif	/	false	true	lopos1.wav	maneg1.wav	698
+3	duck_r.gif	-34	270	lo2.wav	lo_left_trans.gif	ma_right_trans.gif	<	true	false	lopos2.wav	loneg1.wav	698
+4	dog_r.gif	-34	270	ma2.wav	lo_left_trans.gif	ma_right_trans.gif	/	false	true	mapos2.wav	maneg1.wav	698
+5	duck_l.gif	698	90	lo3.wav	lo_left_trans.gif	ma_right_trans.gif	<	true	false	lopos3.wav	loneg2.wav	-34
+6	pig_r.gif	-34	270	ma3wav	ma_left_trans.gif	lo_right_trans.gif	<	true	false	mapos3.wav	maneg1.wav	698
+7	dog_l.gif	698	90	ma2.wav	lo_left_trans.gif	ma_right_trans.gif	/	false	true	mapos4.wav	maneg2.wav	-34
+8	mouse_l.gif	698	90	ma3wav	ma_left_trans.gif	lo_right_trans.gif	<	true	false	mapos2.wav	maneg2.wav	-34
+9	mouse_r.gif	-34	270	lo2.wav	ma_left_trans.gif	lo_right_trans.gif	/	false	true	lopos4.wav	loneg2.wav	698
+10	pig_l.gif	698	90	ma1.wav	lo_left_trans.gif	ma_right_trans.gif	/	false	true	mapos1.wav	maneg1.wav	-34
+11	dog_l.gif	698	90	lo1.wav	ma_left_trans.gif	lo_right_trans.gif	/	false	true	lopos1.wav	loneg1.wav	-34
+12	duck_r.gif	-34	270	lo3.wav	lo_left_trans.gif	ma_right_trans.gif	<	true	false	lopos3.wav	loneg2.wav	698

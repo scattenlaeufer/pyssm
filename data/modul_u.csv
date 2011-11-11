@@ -1,0 +1,15 @@
+1	fish1_L.gif	717	90	ma1.wav	MA_L.gif	BU_R.gif	97	true	false	mapos1.wav	maneg1.wav	57
+2	fish2_R.gif	57	270	bu2.wav	KE_L.gif	BU_R.gif	39	false	true	bupos2.wav	buneg1.wav	717
+3	fish3_L.gif	717	90	ke1.wav	KE_L.gif	LO_R.gif	97	true	false	kepos1.wav	keneg1.wav	57
+4	fish4_R.gif	57	270	lo2.wav	MA_L.gif	LO_R.gif	39	false	true	lopos2.wav	loneg1.wav	717
+5	fish2_L.gif	717	90	bu1.wav	BU_L.gif	MA_R.gif	97	true	false	bupos1.wav	buneg1.wav	57
+6	fish1_R.gif	57	270	ke2.wav	LO_L.gif	KE_R.gif	39	false	true	kepos2.wav	keneg1.wav	717
+7	fish2_L.gif	717	90	lo1.wav	BU_L.gif	LO_R.gif	39	false	true	lopos1.wav	loneg1.wav	57
+8	fish4_R.gif	57	270	ma2.wav	KE_L.gif	MA_R.gif	39	false	true	mapos2.wav	maneg1.wav	717
+9	fish4_L.gif	717	90	ke1.wav	KE_L.gif	BU_R.gif	97	true	false	kepos1.wav	keneg1.wav	57
+10	fish2_R.gif	57	270	bu2.wav	BU_L.gif	MA_R.gif	97	true	false	bupos2.wav	buneg1.wav	717
+11	fish3_L.gif	717	90	bu1.wav	LO_L.gif	BU_R.gif	39	false	true	bupos1.wav	buneg1.wav	57
+12	fish1_R.gif	57	270	ma2.wav	MA_L.gif	LO_R.gif	97	true	false	mapos2.wav	maneg1.wav	717
+13	fish4_L.gif	717	90	ke1.wav	BU_L.gif	KE_R.gif	39	false	true	kepos1.wav	keneg1.wav	57
+14	fish3_R.gif	57	270	bu2.wav	MA_L.gif	BU_R.gif	39	false	true	bupos2.wav	buneg1.wav	717
+15	fish1_L.gif	717	90	lo1.wav	LO_L.gif	KE_R.gif	97	true	false	lopos1.wav	loneg1.wav	57

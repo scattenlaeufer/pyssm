@@ -441,7 +441,7 @@ class Stage_A(Stage):
 			bg_stage = pygame.image.load('images/bg/bg_landscape.jpg')
 
 			log_a = Trail_Logger('test_a')
-			stage = OneOutOfTwo(log_a,self.surface,bg_stage,sprites,syllables,syllable_images,syllable_sound)
+			stage = OneOutOfTwo(log_a,self.surface,bg_stage,sprites,syllables,syllable_images,syllable_sound,random_order=True,order='data/modul_a.csv')
 
 			miss = 0
 			miss = stage.start(12)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import pygame, random, sys
-from helpers import Stop_Watch
+from helpers import Stop_Watch, Trail_Data
 from helpers.log import Trail_Logger
 from helpers.debug import Debugger
 from pygame.locals import *
@@ -172,34 +172,74 @@ class OneOutOfTwo(Engine):
 		self.reset_syllables_called()
 		self.log.set_top('trail_nr\tsyllable_l\tsyllable_r\tsound\tkey_pressed\tresponse\tresponsetime\tsprite')
 
+		if not self.random_order:
+			trails = Trail_Data(self.order)
+			n = trails.get_n_trails()
+			site = []
+
 		for i in range(n):
 			size = self.surface.get_size()
 			self.bg = pygame.transform.scale(self.bg,size)
 			self.surface.blit(self.bg,(0,0))
 
-			correct = random.randint(0,1)
-			direction = random.randint(0,1)
-			if direction == 0:
-				direction_str = 'l'
+			if self.random_order:
+				correct = random.randint(0,1)
+				direction = random.randint(0,1)
+				if direction == 0:
+					direction_str = 'l'
+				else:
+					direction_str = 'r'
+
+				sprite_str = self.sprites.keys()[random.randint(0,self.n_sprites-1)]
+
+				check = True
+				while check:
+					syllable = self.choose_two(self.n_syllables)
+					check = not self.check_correct_syllable(self.syllables[syllable[correct]])
+				syllable_str = [self.syllables[syllable[0]],self.syllables[syllable[1]]]
+
 			else:
-				direction_str = 'r'
+				accept = False
+				while not accept:
+					trail_nr,trail = trails.get_trail()
+					syllable_correct = trail[4][:2]
+					syllable_left = trail[5][:2]
+					syllable_right = trail[6][:2]
+					syllable_str = [syllable_left,syllable_right]
+					if syllable_correct == syllable_left:
+						correct = 0
+					else:
+						correct = 1
+					if len(site) == 0:
+						site.append(correct)
+						accept = True
+					else:
+						if site[len(site)-1] != correct:
+							site = [correct]
+							accept = True
+						else:
+							if len(site) < 2:
+								site.append(correct)
+								accept = True
 
-			sprite_str = self.sprites.keys()[random.randint(0,self.n_sprites-1)]
+				trails.accept(trail_nr)
+				sprite = trail[1][:-4]
+				sprite_str = sprite[:-2]
+				direction_str = sprite[-1:]
+				if direction_str == 'l':
+					direction = 0
+				else:
+					direction = 1
+
 			sprite = self.sprites[sprite_str][direction_str]
-
-			check = True
-			while check:
-				syllable = self.choose_two(self.n_syllables)
-				check = not self.check_correct_syllable(self.syllables[syllable[correct]])
-
 			#self.draw_sprite(sprite)
 			self.enter_sprite(sprite,direction)
 			pygame.event.clear()
-			self.draw_syllable_left(self.syllable_images[self.syllables[syllable[0]]]['l'])
-			self.draw_syllable_right(self.syllable_images[self.syllables[syllable[1]]]['r'])
+			self.draw_syllable_left(self.syllable_images[syllable_str[0]]['l'])
+			self.draw_syllable_right(self.syllable_images[syllable_str[1]]['r'])
 			pygame.display.update()
 
-			self.syllable_sounds[self.syllables[syllable[correct]]][str(random.randint(1,3))].play()
+			self.syllable_sounds[syllable_str[correct]][str(random.randint(1,3))].play()
 			sw.start()
 
 			key_pressed = False
@@ -224,41 +264,41 @@ class OneOutOfTwo(Engine):
 
 				
 				if press == correct and key_pressed:
-					log_line = [i,self.syllables[syllable[0]],self.syllables[syllable[1]],self.syllables[syllable[correct]],press,int(press==correct),sw.get_time(),sprite_str]
+					log_line = [i,syllable_str[0],syllable_str[1],syllable_str[correct],press,int(press==correct),sw.get_time(),sprite_str]
 					self.log.add(log_line)
-					self.syllable_sounds[self.syllables[syllable[correct]]]['pos'+str(random.randint(1,4))].play()
+					self.syllable_sounds[syllable_str[correct]]['pos'+str(random.randint(1,4))].play()
 					self.surface.blit(self.bg,(0,0))
 					self.draw_sprite(sprite)
 					if correct == 0:
-						self.draw_syllable_left(self.syllable_images[self.syllables[syllable[0]]]['l'])
+						self.draw_syllable_left(self.syllable_images[syllable_str[0]]['l'])
 					else:
-						self.draw_syllable_right(self.syllable_images[self.syllables[syllable[1]]]['r'])
+						self.draw_syllable_right(self.syllable_images[syllable_str[1]]['r'])
 					pygame.display.update()
 					pygame.time.wait(3700)
 					pygame.event.clear()
 					break
 
 				if press != correct and key_pressed:
-					log_line = [i,self.syllables[syllable[0]],self.syllables[syllable[1]],self.syllables[syllable[correct]],press,int(press==correct),sw.get_time(),sprite_str]
+					log_line = [i,syllable_str[0],syllable_str[1],syllable_str[correct],press,int(press==correct),sw.get_time(),sprite_str]
 					self.log.add(log_line)
 					key_pressed = False
-					self.syllable_sounds[self.syllables[syllable[correct]]]['neg'+str(random.randint(1,2))].play() 
+					self.syllable_sounds[syllable_str[correct]]['neg'+str(random.randint(1,2))].play() 
 					self.surface.blit(self.bg,(0,0))
 					self.draw_sprite(sprite)
 					if correct == 0:
-						self.draw_syllable_left(self.syllable_images[self.syllables[syllable[0]]]['l'])
+						self.draw_syllable_left(self.syllable_images[syllable_str[0]]['l'])
 					else:
-						self.draw_syllable_right(self.syllable_images[self.syllables[syllable[1]]]['r'])
+						self.draw_syllable_right(self.syllable_images[syllable_str[1]]['r'])
 					pygame.display.update()
 					pygame.time.wait(4500)
 					self.miss += 1
 					
 					if correct == 0:
-						self.draw_syllable_right(self.syllable_images[self.syllables[syllable[1]]]['r'])
+						self.draw_syllable_right(self.syllable_images[syllable_str[1]]['r'])
 					else:
-						self.draw_syllable_left(self.syllable_images[self.syllables[syllable[0]]]['l'])
+						self.draw_syllable_left(self.syllable_images[syllable_str[0]]['l'])
 					pygame.display.update()
-					self.syllable_sounds[self.syllables[syllable[correct]]][str(random.randint(1,3))].play()
+					self.syllable_sounds[syllable_str[correct]][str(random.randint(1,3))].play()
 					sw.start()
 					pygame.event.clear()
 

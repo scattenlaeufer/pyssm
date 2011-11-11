@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import time, string, threading, pygame
+import time, string, threading, pygame, random
 from pygame.locals import *
 
 class Stop_Watch(threading.Thread):
@@ -41,3 +41,49 @@ class Instruction:
 
 			if not pygame.mixer.music.get_busy():
 				break
+
+
+class Trail_Data:
+
+	def __init__(self,data_source):
+
+		with open(data_source, mode='r') as data_file:
+			data_str = data_file.read()
+
+		data_list = string.split(data_str,'\n')
+		self.data = []
+		for i in data_list:
+			if i != '':
+				par_list = string.split(i,'\t')
+				self.data.append(par_list)
+
+#		print self.data
+
+	
+	def __str__(self):
+		out = ''
+		for i in range(len(self.data)-1):
+			for j in self.data[i]:
+				out += str(j) +'\t'
+			out += self.data[i].__str__()
+			out += '\n'
+		return out
+
+
+	def get_n_trails(self):
+		return len(self.data)
+
+
+	def get_trail(self):
+		if len(self.data)-1 >= 0:
+			i = random.randint(0,len(self.data)-1)
+			#print(len(self.data))
+			#print(i)
+			out = self.data[i]
+			#self.data = self.data[:i] + self.data[i+1:]
+			return i,out
+		else:
+			return None,None
+
+	def accept(self,i):
+		self.data = self.data[:i] + self.data[i+1:]
