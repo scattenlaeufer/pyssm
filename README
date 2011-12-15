@@ -12,4 +12,16 @@ study on the early symptoms of dyslexia
 Dependencies:
     python 2.7 (www.python.org)
     pygame (www.pygame.org)
-    Ogg Vorbis (www.vorbis.com)
+
+How to install pyssm?
+
+To install pyssm on linux, go in a shell to the directory with the source code and use the following command:
+	python2 setup.py install
+
+To install pyssm on windows, use someting like cmd to go to the directiory with the source code and use the following command:
+	setup.py install
+or build with
+	setup.py bdist_wininst
+a .exe or with
+	setup.py bdist_msi
+a .msi file to install and uninstall it.

@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 from distutils.core import setup
+from os import path
+import shutil
 
 setup(name='pyssm',
 		version='0.1',
 		description='Small game to teach eight syllables',
-		author=u'Björn Guth',
+		author='Bjoern Guth',
 		author_email='bjoern.guth@rwth-aachen.de',
 		url='http://www.ukaachen.de/content/folder/1161467',
-		#py_modules=['stages','engines'],
 		packages=['helpers','level'],
 		scripts=['pyssm.py'],
 		package_dir={'level':'level'},
@@ -186,13 +187,15 @@ setup(name='pyssm',
 							'audio/syllable/tipos3.ogg',
 							'audio/syllable/tipos4.ogg',
 
-							'data/modul_a.csv',
+							'data/modul_a',
 							'data/modul_b.csv',
 							'data/modul_f.csv',
 							'data/modul_l.csv',
 							'data/modul_p.csv',
 							'data/modul_q.csv',
-							'data/modul_u.csv',
-							'data/modul_z.csv',
+							'data/modul_u',
+							'data/modul_z'
 							]}
 		)
+
+shutil.copy('pyssm.py',path.join(path.expanduser('~'),'pyssm.py'))

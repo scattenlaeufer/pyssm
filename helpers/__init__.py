@@ -43,7 +43,7 @@ class Instruction:
 				break
 
 
-class Trail_Data:
+class Trial_Data:
 
 	def __init__(self,data_source):
 
@@ -57,7 +57,6 @@ class Trail_Data:
 				par_list = string.split(i,'\t')
 				self.data.append(par_list)
 
-#		print self.data
 
 	
 	def __str__(self):
@@ -70,17 +69,14 @@ class Trail_Data:
 		return out
 
 
-	def get_n_trails(self):
+	def get_n_trials(self):
 		return len(self.data)
 
 
-	def get_trail(self):
+	def get_trial(self):
 		if len(self.data)-1 >= 0:
 			i = random.randint(0,len(self.data)-1)
-			#print(len(self.data))
-			#print(i)
 			out = self.data[i]
-			#self.data = self.data[:i] + self.data[i+1:]
 			return i,out
 		else:
 			return None,None

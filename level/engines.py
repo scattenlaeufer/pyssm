@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-import pygame, random, sys
-from helpers import Stop_Watch, Trail_Data
+import pygame, random, sys, string
+from helpers import Stop_Watch, Trial_Data
 from helpers.log import Trail_Logger
 from helpers.debug import Debugger
 from pygame.locals import *
@@ -173,8 +173,8 @@ class OneOutOfTwo(Engine):
 		self.log.set_top('trail_nr\tsyllable_l\tsyllable_r\tsound\tkey_pressed\tresponse\tresponsetime\tsprite')
 
 		if not self.random_order:
-			trails = Trail_Data(self.order)
-			n = trails.get_n_trails()
+			trials = Trial_Data(self.order)
+			n = trials.get_n_trials()
 			site = []
 
 		for i in range(n):
@@ -200,17 +200,19 @@ class OneOutOfTwo(Engine):
 
 			else:
 				accept = False
+				i = 0
 				while not accept:
-					trail_nr,trail = trails.get_trail()
-					syllable_correct = trail[4][:2]
-					syllable_left = trail[5][:2]
-					syllable_right = trail[6][:2]
+					
+					trial_nr,trial = trials.get_trial()
+					syllable_correct = trial[4][:2]
+					syllable_left = string.lower(trial[5][:2])
+					syllable_right = string.lower(trial[6][:2])
 					syllable_str = [syllable_left,syllable_right]
 					if syllable_correct == syllable_left:
 						correct = 0
 					else:
 						correct = 1
-					if len(site) == 0:
+					if len(site) == 0 or trials.get_n_trials() <= 1 or i > 20:
 						site.append(correct)
 						accept = True
 					else:
@@ -221,11 +223,14 @@ class OneOutOfTwo(Engine):
 							if len(site) < 2:
 								site.append(correct)
 								accept = True
+					i += 1
+					if i > 1:
+						print(str(trails.get_n_trails())+' => '+str(i))
 
-				trails.accept(trail_nr)
-				sprite = trail[1][:-4]
+				trials.accept(trial_nr)
+				sprite = trial[1][:-4]
 				sprite_str = sprite[:-2]
-				direction_str = sprite[-1:]
+				direction_str = string.lower(sprite[-1:])
 				if direction_str == 'l':
 					direction = 0
 				else:

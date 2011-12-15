@@ -442,7 +442,7 @@ class Stage_A(Stage):
 			bg_stage = pygame.image.load(os.path.join(self.path,'images/bg/bg_landscape.jpg'))
 
 			log_a = Trail_Logger('test_a')
-			stage = OneOutOfTwo(log_a,self.surface,bg_stage,sprites,syllables,syllable_images,syllable_sound,random_order=True,order=os.path.join(self.path,'data/modul_a.csv'))
+			stage = OneOutOfTwo(log_a,self.surface,bg_stage,sprites,syllables,syllable_images,syllable_sound,random_order=False,order=os.path.join(self.path,'data/modul_a'))
 
 			miss = 0
 			miss = stage.start(12)
@@ -561,29 +561,29 @@ class Stage_U(Stage):
 			syllable_images['bu']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_u/bu_right_trans.gif'))
 
 			sprites = {}
-			sprites['f1'] = {}
-			sprites['f1']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish1_R.gif'))
-			sprites['f1']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish1_L.gif'))
-			sprites['f2'] = {}
-			sprites['f2']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish2_R.gif'))
-			sprites['f2']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish2_L.gif'))
-			sprites['f3'] = {}
-			sprites['f3']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish3_R.gif'))
-			sprites['f3']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish3_L.gif'))
-			sprites['f4'] = {}
-			sprites['f4']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish4_R.gif'))
-			sprites['f4']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish4_L.gif'))
-			sprites['f5'] = {}
-			sprites['f5']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish5_R.gif'))
-			sprites['f5']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish5_L.gif'))
-			sprites['f6'] = {}
-			sprites['f6']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish6_R.gif'))
-			sprites['f6']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish6_L.gif'))
+			sprites['fish1'] = {}
+			sprites['fish1']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish1_R.gif'))
+			sprites['fish1']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish1_L.gif'))
+			sprites['fish2'] = {}
+			sprites['fish2']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish2_R.gif'))
+			sprites['fish2']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish2_L.gif'))
+			sprites['fish3'] = {}
+			sprites['fish3']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish3_R.gif'))
+			sprites['fish3']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish3_L.gif'))
+			sprites['fish4'] = {}
+			sprites['fish4']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish4_R.gif'))
+			sprites['fish4']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish4_L.gif'))
+			sprites['fish5'] = {}
+			sprites['fish5']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish5_R.gif'))
+			sprites['fish5']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish5_L.gif'))
+			sprites['fish6'] = {}
+			sprites['fish6']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish6_R.gif'))
+			sprites['fish6']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish6_L.gif'))
 
 			bg_stage = pygame.image.load(os.path.join(self.path,'images/bg/underwater.gif'))
 			
 			log_u = Trail_Logger('test_u')
-			stage = OneOutOfTwo(log_u,self.surface,bg_stage,sprites,syllables,syllable_images,syllable_sound)
+			stage = OneOutOfTwo(log_u,self.surface,bg_stage,sprites,syllables,syllable_images,syllable_sound,random_order=False,order=os.path.join(self.path,'data/modul_u'))
 			miss = 0
 			miss = stage.start(15)
 			if miss > 3 and not test:
