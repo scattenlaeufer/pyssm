@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import pygame, sys, random, time
+import pygame, sys, random, time, os
 from pygame.locals import *
 from engines import OneOutOfTwo
 from helpers.log import Log_Handler
@@ -14,6 +14,7 @@ class Stage:
 
 	def __init__(self,bla=True):
 		
+		self.path = __file__[:-10]
 		self.miss = 0
 		self.instr = None
 		self.mainClock = pygame.time.Clock()
@@ -125,19 +126,19 @@ class Stage:
 
 		dic = {}
 		
-		dic['1'] = self.load_sound('audio/syllable/'+syllable+'1.ogg')
-		dic['2'] = self.load_sound('audio/syllable/'+syllable+'2.ogg')
-		dic['3'] = self.load_sound('audio/syllable/'+syllable+'3.ogg')
+		dic['1'] = self.load_sound(os.path.join(self.path,'audio/syllable/'+syllable+'1.ogg'))
+		dic['2'] = self.load_sound(os.path.join(self.path,'audio/syllable/'+syllable+'2.ogg'))
+		dic['3'] = self.load_sound(os.path.join(self.path,'audio/syllable/'+syllable+'3.ogg'))
 		
-		dic['miss'] = self.load_sound('audio/syllable/'+syllable+'miss.ogg')
+		dic['miss'] = self.load_sound(os.path.join(self.path,'audio/syllable/'+syllable+'miss.ogg'))
 		
-		dic['neg1'] = self.load_sound('audio/syllable/'+syllable+'neg1.ogg')
-		dic['neg2'] = self.load_sound('audio/syllable/'+syllable+'neg2.ogg')
+		dic['neg1'] = self.load_sound(os.path.join(self.path,'audio/syllable/'+syllable+'neg1.ogg'))
+		dic['neg2'] = self.load_sound(os.path.join(self.path,'audio/syllable/'+syllable+'neg2.ogg'))
 		
-		dic['pos1'] = self.load_sound('audio/syllable/'+syllable+'pos1.ogg')
-		dic['pos2'] = self.load_sound('audio/syllable/'+syllable+'pos2.ogg')
-		dic['pos3'] = self.load_sound('audio/syllable/'+syllable+'pos3.ogg')
-		dic['pos4'] = self.load_sound('audio/syllable/'+syllable+'pos4.ogg')
+		dic['pos1'] = self.load_sound(os.path.join(self.path,'audio/syllable/'+syllable+'pos1.ogg'))
+		dic['pos2'] = self.load_sound(os.path.join(self.path,'audio/syllable/'+syllable+'pos2.ogg'))
+		dic['pos3'] = self.load_sound(os.path.join(self.path,'audio/syllable/'+syllable+'pos3.ogg'))
+		dic['pos4'] = self.load_sound(os.path.join(self.path,'audio/syllable/'+syllable+'pos4.ogg'))
 		
 		return dic
 
@@ -145,7 +146,7 @@ class Stage:
 	def play_instruction(self,instr,clean=True):
 		
 		self.instr = instr
-		pygame.mixer.music.load(instr)
+		pygame.mixer.music.load(os.path.join(self.path,instr))
 		pygame.mixer.music.set_volume(1.0)
 		pygame.mixer.music.play()
 		
@@ -216,7 +217,7 @@ class Stage:
 
 		sound.play()
 
-		im = pygame.image.load(image)
+		im = pygame.image.load(os.path.join(self.path,image))
 		dimension = (self.windowwidth/3,self.transform_height(im,self.windowwidth/3))
 		im = pygame.transform.scale(im,dimension)
 		self.surface.blit(im,(self.position_center_width(im),self.position_center_height(im)))
@@ -244,11 +245,11 @@ class Stage:
 			self.surface.fill(self.bg_blank)
 			correct = random.randint(1,2)
 
-			image = pygame.image.load('images/syllables/'+syllable.upper()+'.gif')
+			image = pygame.image.load(os.path.join(self.path,'images/syllables/'+syllable.upper()+'.gif'))
 			dimension = (self.windowwidth/3,self.transform_height(image,self.windowwidth/3))
 			image = pygame.transform.scale(image,dimension)
 
-			distr = pygame.image.load('images/distr/DISTR'+str(random.randint(1,10))+'.gif')
+			distr = pygame.image.load(os.path.join(self.path,'images/distr/DISTR'+str(random.randint(1,10))+'.gif'))
 			distr = pygame.transform.scale(distr,dimension)
 			
 			if correct == 1:
@@ -347,7 +348,7 @@ class Stage_A(Stage):
 				self.start('Modul A','audio/instr/instr1.ogg')
 
 				#teach and test LO
-				self.teach_syllable('images/syllables/LO.gif',self.load_sound('audio/pres/preslo.ogg'))
+				self.teach_syllable('images/syllables/LO.gif',self.load_sound(os.path.join(self.path,'audio/pres/preslo.ogg')))
 				self.play_instruction('audio/instr/instr2.ogg')
 				self.teach_syllable('images/syllables/LO.gif',self.lo['1'])
 				
@@ -369,7 +370,7 @@ class Stage_A(Stage):
 				#teach and test MA
 				self.play_instruction('audio/instr/instr4.ogg')
 
-				self.teach_syllable('images/syllables/MA.gif',self.load_sound('audio/pres/presma.ogg'))
+				self.teach_syllable('images/syllables/MA.gif',self.load_sound(os.path.join(self.path,'audio/pres/presma.ogg')))
 				self.play_instruction('audio/instr/instr2.ogg')
 				self.teach_syllable('images/syllables/MA.gif',self.ma['1'])
 
@@ -399,15 +400,15 @@ class Stage_A(Stage):
 		else:
 			res_teach = -1
 			self.start('Modul R','audio/instr/instr7.ogg')
-			self.teach_syllable('images/syllables/LO.gif',self.load_sound('audio/pres/preslo.ogg'))
-			self.teach_syllable('images/syllables/MA.gif',self.load_sound('audio/pres/presma.ogg'))
+			self.teach_syllable('images/syllables/LO.gif',self.load_sound(os.path.join(self.path,'audio/pres/preslo.ogg')))
+			self.teach_syllable('images/syllables/MA.gif',self.load_sound(os.path.join(self.path,'audio/pres/presma.ogg')))
 
 		if not (teach or test):
-			image = pygame.image.load('images/bg/bg_smiley.jpg')
+			image = pygame.image.load(os.path.join(self.path,'images/bg/bg_smiley.jpg'))
 			self.draw(image)
 			self.play_instruction('audio/instr/instr5.ogg',False)
 
-			image = pygame.image.load('images/bg/bg_landscape.jpg')
+			image = pygame.image.load(os.path.join(self.path,'images/bg/bg_landscape.jpg'))
 			self.draw(image)
 			self.play_instruction('audio/instr/instr6.ogg',False)
 
@@ -417,31 +418,31 @@ class Stage_A(Stage):
 			syllable_images = {}
 			syllable_sound['lo'] = self.lo
 			syllable_images['lo'] = {}
-			syllable_images['lo']['l'] = pygame.image.load('images/syllables/lo_left_trans.gif')
-			syllable_images['lo']['r'] = pygame.image.load('images/syllables/lo_right_trans.gif')		
+			syllable_images['lo']['l'] = pygame.image.load(os.path.join(self.path,'images/syllables/lo_left_trans.gif'))
+			syllable_images['lo']['r'] = pygame.image.load(os.path.join(self.path,'images/syllables/lo_right_trans.gif'))
 			syllable_sound['ma'] = self.ma
 			syllable_images['ma'] = {}
-			syllable_images['ma']['l'] = pygame.image.load('images/syllables/ma_left_trans.gif')
-			syllable_images['ma']['r'] = pygame.image.load('images/syllables/ma_right_trans.gif')
+			syllable_images['ma']['l'] = pygame.image.load(os.path.join(self.path,'images/syllables/ma_left_trans.gif'))
+			syllable_images['ma']['r'] = pygame.image.load(os.path.join(self.path,'images/syllables/ma_right_trans.gif'))
 
 			sprites = {}
 			sprites['dog'] = {}
-			sprites['dog']['r'] = pygame.image.load('images/stage_a/dog_l.gif')
-			sprites['dog']['l'] = pygame.image.load('images/stage_a/dog_r.gif')
+			sprites['dog']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_a/dog_l.gif'))
+			sprites['dog']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_a/dog_r.gif'))
 			sprites['duck'] = {}
-			sprites['duck']['r'] = pygame.image.load('images/stage_a/duck_l.gif')
-			sprites['duck']['l'] = pygame.image.load('images/stage_a/duck_r.gif')
+			sprites['duck']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_a/duck_l.gif'))
+			sprites['duck']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_a/duck_r.gif'))
 			sprites['mouse'] = {}
-			sprites['mouse']['r'] = pygame.image.load('images/stage_a/mouse_l.gif')
-			sprites['mouse']['l'] = pygame.image.load('images/stage_a/mouse_r.gif')
+			sprites['mouse']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_a/mouse_l.gif'))
+			sprites['mouse']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_a/mouse_r.gif'))
 			sprites['pig'] = {}
-			sprites['pig']['r'] = pygame.image.load('images/stage_a/pig_l.gif')
-			sprites['pig']['l'] = pygame.image.load('images/stage_a/pig_r.gif')
+			sprites['pig']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_a/pig_l.gif'))
+			sprites['pig']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_a/pig_r.gif'))
 
-			bg_stage = pygame.image.load('images/bg/bg_landscape.jpg')
+			bg_stage = pygame.image.load(os.path.join(self.path,'images/bg/bg_landscape.jpg'))
 
 			log_a = Trail_Logger('test_a')
-			stage = OneOutOfTwo(log_a,self.surface,bg_stage,sprites,syllables,syllable_images,syllable_sound,random_order=True,order='data/modul_a.csv')
+			stage = OneOutOfTwo(log_a,self.surface,bg_stage,sprites,syllables,syllable_images,syllable_sound,random_order=True,order=os.path.join(self.path,'data/modul_a.csv'))
 
 			miss = 0
 			miss = stage.start(12)
@@ -472,7 +473,7 @@ class Stage_A(Stage):
 		log.add('A',res_teach,res_test)
 
 		if not (teach or test):
-			image = pygame.image.load('images/bg/bg_wave.jpg')
+			image = pygame.image.load(os.path.join(self.path,'images/bg/bg_wave.jpg'))
 			self.draw(image)
 			self.play_instruction('audio/final/final1.ogg',False)
 
@@ -500,7 +501,7 @@ class Stage_U(Stage):
 			if not (teach or test):
 				self.start('Modul U','audio/instr/instr9.ogg')
 
-				self.teach_syllable('images/syllables/BU.gif',self.load_sound('audio/pres/presbu.ogg'))
+				self.teach_syllable('images/syllables/BU.gif',self.load_sound(os.path.join(self.path,'audio/pres/presbu.ogg')))
 				self.play_instruction('audio/instr/instr2.ogg')
 				self.teach_syllable('images/syllables/BU.gif',bu['1'])
 				self.play_instruction('audio/instr/instr3.ogg')
@@ -522,19 +523,19 @@ class Stage_U(Stage):
 
 			if not (teach or test):
 				self.play_instruction('audio/misc/repeat.ogg')
-				self.teach_syllable('images/syllables/LO.gif',self.load_sound('audio/pres/preslo.ogg'))
-				self.teach_syllable('images/syllables/MA.gif',self.load_sound('audio/pres/presma.ogg'))
-				self.teach_syllable('images/syllables/KE.gif',self.load_sound('audio/pres/preske.ogg'))
+				self.teach_syllable('images/syllables/LO.gif',self.load_sound(os.path.join(self.path,'audio/pres/preslo.ogg')))
+				self.teach_syllable('images/syllables/MA.gif',self.load_sound(os.path.join(self.path,'audio/pres/presma.ogg')))
+				self.teach_syllable('images/syllables/KE.gif',self.load_sound(os.path.join(self.path,'audio/pres/preske.ogg')))
 		else:
 			miss_teach = -1
 			self.start('Modul C','audio/instr/instr7.ogg')
-			self.teach_syllable('images/syllables/LO.gif',self.load_sound('audio/pres/preslo.ogg'))
-			self.teach_syllable('images/syllables/MA.gif',self.load_sound('audio/pres/presma.ogg'))
-			self.teach_syllable('images/syllables/KE.gif',self.load_sound('audio/pres/preske.ogg'))
-			self.teach_syllable('images/syllables/BU.gif',self.load_sound('audio/pres/presbu.ogg'))
+			self.teach_syllable('images/syllables/LO.gif',self.load_sound(os.path.join(self.path,'audio/pres/preslo.ogg')))
+			self.teach_syllable('images/syllables/MA.gif',self.load_sound(os.path.join(self.path,'audio/pres/presma.ogg')))
+			self.teach_syllable('images/syllables/KE.gif',self.load_sound(os.path.join(self.path,'audio/pres/preske.ogg')))
+			self.teach_syllable('images/syllables/BU.gif',self.load_sound(os.path.join(self.path,'audio/pres/presbu.ogg')))
 
 		if not (test or teach):
-			image = pygame.image.load('images/bg/underwater.gif')
+			image = pygame.image.load(os.path.join(self.path,'images/bg/underwater.gif'))
 			self.draw(image)
 			self.play_instruction('audio/instr/instr11.ogg',False)
 
@@ -544,42 +545,42 @@ class Stage_U(Stage):
 			syllable_images = {}
 			syllable_sound['lo'] = lo
 			syllable_images['lo'] = {}
-			syllable_images['lo']['l'] = pygame.image.load('images/stage_u/lo_left_trans.gif')
-			syllable_images['lo']['r'] = pygame.image.load('images/stage_u/lo_right_trans.gif')		
+			syllable_images['lo']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_u/lo_left_trans.gif'))
+			syllable_images['lo']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_u/lo_right_trans.gif'))
 			syllable_sound['ma'] = ma
 			syllable_images['ma'] = {}
-			syllable_images['ma']['l'] = pygame.image.load('images/stage_u/ma_left_trans.gif')
-			syllable_images['ma']['r'] = pygame.image.load('images/stage_u/ma_right_trans.gif')
+			syllable_images['ma']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_u/ma_left_trans.gif'))
+			syllable_images['ma']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_u/ma_right_trans.gif'))
 			syllable_sound['ke'] = ke
 			syllable_images['ke'] = {}
-			syllable_images['ke']['l'] = pygame.image.load('images/stage_u/ke_left_trans.gif')
-			syllable_images['ke']['r'] = pygame.image.load('images/stage_u/ke_right_trans.gif')
+			syllable_images['ke']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_u/ke_left_trans.gif'))
+			syllable_images['ke']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_u/ke_right_trans.gif'))
 			syllable_sound['bu'] = bu
 			syllable_images['bu'] = {}
-			syllable_images['bu']['l'] = pygame.image.load('images/stage_u/bu_left_trans.gif')
-			syllable_images['bu']['r'] = pygame.image.load('images/stage_u/bu_right_trans.gif')
+			syllable_images['bu']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_u/bu_left_trans.gif'))
+			syllable_images['bu']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_u/bu_right_trans.gif'))
 
 			sprites = {}
 			sprites['f1'] = {}
-			sprites['f1']['l'] = pygame.image.load('images/stage_u/fish1_R.gif')
-			sprites['f1']['r'] = pygame.image.load('images/stage_u/fish1_L.gif')
+			sprites['f1']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish1_R.gif'))
+			sprites['f1']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish1_L.gif'))
 			sprites['f2'] = {}
-			sprites['f2']['l'] = pygame.image.load('images/stage_u/fish2_R.gif')
-			sprites['f2']['r'] = pygame.image.load('images/stage_u/fish2_L.gif')
+			sprites['f2']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish2_R.gif'))
+			sprites['f2']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish2_L.gif'))
 			sprites['f3'] = {}
-			sprites['f3']['l'] = pygame.image.load('images/stage_u/fish3_R.gif')
-			sprites['f3']['r'] = pygame.image.load('images/stage_u/fish3_L.gif')
+			sprites['f3']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish3_R.gif'))
+			sprites['f3']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish3_L.gif'))
 			sprites['f4'] = {}
-			sprites['f4']['l'] = pygame.image.load('images/stage_u/fish4_R.gif')
-			sprites['f4']['r'] = pygame.image.load('images/stage_u/fish4_L.gif')
+			sprites['f4']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish4_R.gif'))
+			sprites['f4']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish4_L.gif'))
 			sprites['f5'] = {}
-			sprites['f5']['l'] = pygame.image.load('images/stage_u/fish5_R.gif')
-			sprites['f5']['r'] = pygame.image.load('images/stage_u/fish5_L.gif')
+			sprites['f5']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish5_R.gif'))
+			sprites['f5']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish5_L.gif'))
 			sprites['f6'] = {}
-			sprites['f6']['l'] = pygame.image.load('images/stage_u/fish6_R.gif')
-			sprites['f6']['r'] = pygame.image.load('images/stage_u/fish6_L.gif')
+			sprites['f6']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish6_R.gif'))
+			sprites['f6']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish6_L.gif'))
 
-			bg_stage = pygame.image.load('images/bg/underwater.gif')
+			bg_stage = pygame.image.load(os.path.join(self.path,'images/bg/underwater.gif'))
 			
 			log_u = Trail_Logger('test_u')
 			stage = OneOutOfTwo(log_u,self.surface,bg_stage,sprites,syllables,syllable_images,syllable_sound)
@@ -607,6 +608,6 @@ class Stage_U(Stage):
 		log.save()
 		
 		if not (teach or test):
-			image = pygame.image.load('images/bg/bg_wave.jpg')
+			image = pygame.image.load(os.path.join(self.path,'images/bg/bg_wave.jpg'))
 			self.draw(image)
 			self.play_instruction('audio/final/final1.ogg',False)
