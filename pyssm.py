@@ -3,9 +3,9 @@
 import pygame, sys, time
 from helpers.log import Log_Handler
 from pygame.locals import *
-from level.stages import Stage_A, Stage_U
+from level.stages import Stage_A, Stage_U, Stage_F
 
-print('ssm training version 0.1\nwirtten by Björn Guth')
+print(u'ssm training version 0.1\nwirtten by Björn Guth')
 
 def normal(teach,test):
 	result = log.analyze()
@@ -59,8 +59,10 @@ else:
 		start = sys.argv[sys.argv.index('-s')+1]
 		if start == 'a':
 			stage = Stage_A(log,teach,test,rep)
-		if start == 'u':
+		elif start == 'u':
 			stage = Stage_U(log,teach,test,rep)
+		elif start == 'f':
+			stage = Stage_F(log,teach,test,rep)
 	else:
 		normal(teach,test)
 	

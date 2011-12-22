@@ -2,7 +2,7 @@
 
 import pygame, sys, random, time, os
 from pygame.locals import *
-from engines import OneOutOfTwo
+from engines import OneOutOfTwo, Space_Engine
 from helpers.log import Log_Handler
 from helpers.log import Trail_Logger
 from helpers import Stop_Watch
@@ -39,6 +39,11 @@ class Stage:
 		if bla:
 			self.text = self.font1.render('Willkommen zum Silbenlernspiel',True,(0,0,0))
 			self.surface.blit(self.text,(self.position_center_width(self.text),100))
+
+
+	def get_path(self,path):
+		return os.path.join(self.path,path)
+
 
 	def toggle_fullsreen(self):
 		
@@ -499,9 +504,9 @@ class Stage_U(Stage):
 
 		if not rep:
 			if not (teach or test):
-				self.start('Modul U','audio/instr/instr9.ogg')
+				self.start('Modul U',self.get_path('audio/instr/instr9.ogg'))
 
-				self.teach_syllable('images/syllables/BU.gif',self.load_sound(os.path.join(self.path,'audio/pres/presbu.ogg')))
+				self.teach_syllable(self.get_path('images/syllables/BU.gif'),self.load_sound(os.path.join(self.path,'audio/pres/presbu.ogg')))
 				self.play_instruction('audio/instr/instr2.ogg')
 				self.teach_syllable('images/syllables/BU.gif',bu['1'])
 				self.play_instruction('audio/instr/instr3.ogg')
@@ -611,3 +616,76 @@ class Stage_U(Stage):
 			image = pygame.image.load(os.path.join(self.path,'images/bg/bg_wave.jpg'))
 			self.draw(image)
 			self.play_instruction('audio/final/final1.ogg',False)
+
+
+class Stage_F(Stage):
+
+	def __init__(self,log,teach=False,test=False,rep=False):
+		
+		if teach or test:
+			Stage.__init__(self,False)
+		else:
+			Stage.__init__(self,True)
+
+		if not (teach and test):
+			lo = self.load_syllable_sound('lo')
+			ma = self.load_syllable_sound('ma')
+			ke = self.load_syllable_sound('ke')
+
+		if not rep:
+			if not (teach or test):
+				self.start('Modul F','audio/instr/instr9.ogg')
+
+				self.teach_syllable(self.get_path('images/syllables/KE.gif'),self.load_sound(self.get_path('audio/pres/preske.ogg')))
+				self.play_instruction(self.get_path('audio/instr/instr2.ogg'))
+				self.teach_syllable(self.get_path('images/syllables/KE.gif'),ke['1'])
+				self.play_instruction('audio/instr/instr3.ogg')
+
+			if not test:
+				miss = 0
+				miss = self.test_syllable('ke',ke,8)
+				if miss > 2 and not teach:
+					miss = 0
+					self.play_instruction('audio/instr/instr3.ogg')
+					miss = self.test_syllable('ke',ke,8)
+					if miss > 2:
+						log.add('F',0,-1)
+						log.save()
+						self.stop()
+				res_teach = 1
+			else:
+				res_teach = -1
+
+			if not (teach or test):
+				self.play_instruction('audio/misc/repeat.ogg')
+				self.teach_syllable('images/syllables/LO.gif',self.load_sound(self.get_path('audio/pres/preslo.ogg')))
+				self.teach_syllable('images/syllables/MA.gif',self.load_sound(self.get_path('audio/pres/presma.ogg')))
+		else:
+			self.start('Modul S',self.get_path('audio/instr/instr7.ogg'))
+			miss_teach = -1
+			self.teach_syllable(self.get_path('images/syllables/LO.gif'),self.load_sound(self.get_path('audio/pres/preslo.ogg')))
+			self.teach_syllable(self.get_path('images/syllables/MA.gif'),self.load_sound(self.get_path('audio/pres/presma.ogg')))
+			self.teach_syllable(self.get_path('images/syllables/KE.gif'),self.load_sound(self.get_path('audio/pres/preske.ogg')))
+
+		if not teach:
+			syllables = {'lo':4, 'ma':4, 'ke':6}
+			syllable_sound = {}
+			syllable_sound['lo'] = lo
+			syllable_sound['ma'] = ma
+			syllable_sound['ke'] = ke
+
+			sprites = {}
+			sprites['lo'] = pygame.image.load(self.get_path('images/stage_f/ufolo.gif'))
+			sprites['ma'] = pygame.image.load(self.get_path('images/stage_f/ufoma.gif'))
+			sprites['ke'] = pygame.image.load(self.get_path('images/stage_f/ufoke.gif'))
+
+			bg_stage = pygame.image.load(self.get_path('images/bg/background_space.gif'))
+
+		if not (teach or test):
+			self.draw(bg_stage)
+			self.play_instruction('audio/instr/instr10.ogg',False)
+
+		if not teach:
+			log_f = Trail_Logger('test_f')
+			stage = Space_Engine(log_f,self.surface,bg_stage,syllables,syllable_sound,sprites,self.get_path('data/modul_f'))
+			stage.start()

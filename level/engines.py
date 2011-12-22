@@ -7,7 +7,7 @@ from pygame.locals import *
 
 class Engine:
 
-	def __init__(self, surface, bg, syllables, syllable_sounds, syllable_images, random_order, order):
+	def __init__(self, surface, bg, syllables, syllable_sounds, syllable_images, random_order, order, neo=True):
 		self.miss = 0
 		self.frames = 40
 		self.surface = surface
@@ -26,6 +26,13 @@ class Engine:
 
 		for syllable in self.syllables:
 			self.syllables_called[syllable] = 0
+
+		if neo:
+			self.left = u'xvlcwuiaeoüöäpzXVLCWUIAEOÜÖÄPZ'
+			self.right = u'khgfqßsnrtdybm,.jKHGFQẞSNRTDYBM–•J'
+		else:
+			self.left = u'qwertasdfgyxcvbQWERTASDFGYXCVB'
+			self.right = u'zuiopühjklöänmm,.-ZUIOPÜHJKLÖÄNM'
 
 
 	def toggle_fullscreen(self):
@@ -153,17 +160,10 @@ class Engine:
 class OneOutOfTwo(Engine):
 
 	def __init__(self, log, surface, bg, sprites, syllables, syllable_images, syllable_sounds, random_order=True, order=None, neo=True):
-		Engine.__init__(self,surface,bg,syllables,syllable_sounds,syllable_images,random_order,order)
+		Engine.__init__(self,surface,bg,syllables,syllable_sounds,syllable_images,random_order,order,neo)
 		self.log = log
 		self.sprites = sprites
 		self.n_sprites = len(self.sprites)
-
-		if neo:
-			self.left = u'xvlcwuiaeoüöäpzXVLCWUIAEOÜÖÄPZ'
-			self.right = u'khgfqßsnrtdybm,.jKHGFQẞSNRTDYBM–•J'
-		else:
-			self.left = u'qwertasdfgyxcvbQWERTASDFGYXCVB'
-			self.right = u'zuiopühjklöänmm,.-ZUIOPÜHJKLÖÄNM'
 
 
 	def start(self,n=10):
@@ -225,7 +225,7 @@ class OneOutOfTwo(Engine):
 								accept = True
 					i += 1
 					if i > 1:
-						print(str(trails.get_n_trails())+' => '+str(i))
+						print(str(trials.get_n_trials())+' => '+str(i))
 
 				trials.accept(trial_nr)
 				sprite = trial[1][:-4]
@@ -313,4 +313,59 @@ class OneOutOfTwo(Engine):
 		return self.miss
 
 
+class Space_Engine(Engine):
 
+	def __init__(self,log,surface,bg,syllables,syllable_sounds,sprites,order,neo=True):
+		Engine.__init__(self, surface, bg, syllables, syllable_sounds, None, False, order,neo)
+
+		self.sprites = sprites
+		self.log = log
+
+
+	def start(self):
+
+		sw = Stop_Watch()
+		self.log.set_top('trail_nr\tsyllable_l\tsyllable_r\tsound\tkey_pressed\tresponse\tresponsetime')
+
+		trials = Trial_Data(self.order)
+		n = trials.get_n_trials()
+		side = []
+
+		for i in range(1):
+			size = self.surface.get_size()
+			self.bg = pygame.transform.scale(self.bg,size)
+			self.surface.blit(self.bg,(0,0))
+
+			accept = False
+			i = 0
+			while not accept:
+
+				trial_nr,trial = trials.get_trial()
+				syllable = trial[1][:2]
+				sprite_l = trial[2][3:5]
+				sprite_r = trial[3][3:5]
+				print trial_nr
+				print trial
+				print syllable_correct
+				print sprite_l
+				print sprite_r
+				if syllable == sprite_l:
+					correct = 0
+				else:
+					correct = 1
+				if len(side) == 0 or trials.get_n_trials() <= 1 or i > 20:
+					side.append(correct)
+					accept = True
+				elif side[len(side)-1] != correct:
+					side = [correct]
+					accept = True
+				elif len(side) < 2:
+					side.append(correct)
+					accept = True
+				i += 1
+				if i > 1: 
+				print(str(trials.get_n_trials())+' => '+str(i))
+
+			trials.accept(trial_nr)
+
+		print('bla')
