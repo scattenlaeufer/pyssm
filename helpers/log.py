@@ -4,8 +4,10 @@ class Log_Handler:
 
 	def __init__(self):
 
+		self.path = __file__[:-7]
+
 		try:
-			with open('log', mode='r') as log_file:
+			with open(os.path.join(self.path,'log'), mode='r') as log_file:
 				self.log = log_file.read()
 		except:
 			self.log = ''
@@ -22,7 +24,7 @@ class Log_Handler:
 
 	def save(self):
 
-		with open('log', mode='w') as log_file:
+		with open(os.path.join(self.path,'log'), mode='w') as log_file:
 			log_file.write(self.log)
 
 
@@ -53,8 +55,8 @@ class Log_Handler:
 class Trail_Logger:
 
 	def __init__(self,name):
-		self.name = 'trail_log/'+name
-		if os.path.isdir('trail_log'):
+		self.name = os.path.join(__file__[:-7],'trail_log/',name)
+		if os.path.isdir(os.path.join(__file__[:-7],'trail_log')):
 			try:
 				with open(self.name, mode='r') as log_file:
 					self.log = log_file.read()
@@ -70,7 +72,7 @@ class Trail_Logger:
 				self.cc = 0
 		else:
 			self.lines = None
-			os.mkdir('trail_log')
+			os.mkdir(os.path.join(__file__[:-7],'trail_log'))
 			self.log = ''
 			self.cc = 0
 

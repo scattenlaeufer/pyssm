@@ -97,7 +97,8 @@ class Stage:
 		while bla:
 			for event in pygame.event.get():
 				if event.type == KEYDOWN:
-					bla = False
+					if event.key == K_ESCAPE:
+						bla = False
 			self.mainClock.tick(10)
 
 		pygame.quit()
@@ -532,7 +533,7 @@ class Stage_U(Stage):
 				self.teach_syllable('images/syllables/MA.gif',self.load_sound(os.path.join(self.path,'audio/pres/presma.ogg')))
 				self.teach_syllable('images/syllables/KE.gif',self.load_sound(os.path.join(self.path,'audio/pres/preske.ogg')))
 		else:
-			miss_teach = -1
+			res_teach = -1
 			self.start('Modul C','audio/instr/instr7.ogg')
 			self.teach_syllable('images/syllables/LO.gif',self.load_sound(os.path.join(self.path,'audio/pres/preslo.ogg')))
 			self.teach_syllable('images/syllables/MA.gif',self.load_sound(os.path.join(self.path,'audio/pres/presma.ogg')))
@@ -605,10 +606,10 @@ class Stage_U(Stage):
 						log.save()
 						f.end()
 			res_test = 1
+			log_u.save()
 		else:
 			res_test = -1
 
-		log_u.save()
 		log.add('U',res_teach,res_test)
 		log.save()
 		
@@ -661,6 +662,7 @@ class Stage_F(Stage):
 				self.teach_syllable('images/syllables/LO.gif',self.load_sound(self.get_path('audio/pres/preslo.ogg')))
 				self.teach_syllable('images/syllables/MA.gif',self.load_sound(self.get_path('audio/pres/presma.ogg')))
 		else:
+			res_teach = -1
 			self.start('Modul S',self.get_path('audio/instr/instr7.ogg'))
 			miss_teach = -1
 			self.teach_syllable(self.get_path('images/syllables/LO.gif'),self.load_sound(self.get_path('audio/pres/preslo.ogg')))
@@ -688,4 +690,28 @@ class Stage_F(Stage):
 		if not teach:
 			log_f = Trail_Logger('test_f')
 			stage = Space_Engine(log_f,self.surface,bg_stage,syllables,syllable_sound,sprites,self.get_path('data/modul_f'))
-			stage.start()
+			miss = stage.start()
+			if miss > 3 and not test:
+				miss = stage.start()
+				if miss > 3:
+					log_f.save()
+					if rep:
+						log.add('F',res_teach,0)
+						log.save()
+						self.stop()
+					else:
+						log.add('U',res_teach,0)
+						log.save()
+						self.end()
+			res_test = 1
+			log_f.save()
+		else:
+			res_test = -1
+
+		log.add('F',res_teach,res_test)
+		log.save()
+
+		if not (teach or test):
+			image = pygame.image.load(os.path.join(self.path,'images/bg/bg_wave.jpg'))
+			self.draw(image)
+			self.play_instruction('audio/final/final1.ogg',False)
