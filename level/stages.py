@@ -2,7 +2,7 @@
 
 import pygame, sys, random, time, os
 from pygame.locals import *
-from engines import OneOutOfTwo, Space_Engine
+from engines import OneOutOfTwo, Space_Engine, Balloon_Engine
 from helpers.log import Log_Handler
 from helpers.log import Trail_Logger
 from helpers import Stop_Watch
@@ -715,3 +715,96 @@ class Stage_F(Stage):
 			image = pygame.image.load(os.path.join(self.path,'images/bg/bg_wave.jpg'))
 			self.draw(image)
 			self.play_instruction('audio/final/final1.ogg',False)
+
+
+class Stage_Q(Stage):
+	
+	def __init__(self,log,teach=False,test=False,repeat=False):
+
+		if teach or test:
+			#super(Stage_Q,self).__init__(self,False)
+			Stage.__init__(self,False)
+		else:
+			#super(Stage_Q,self).__init__(self,True)
+			Stage.__init__(self,True)
+		
+		lo = self.load_syllable_sound('lo')
+		ma = self.load_syllable_sound('ma')
+		ke = self.load_syllable_sound('ke')
+		bu = self.load_syllable_sound('bu')
+		ti = self.load_syllable_sound('ti')
+
+		if not repeat:
+			if not (teach or test):
+				self.start('Modul Q','audio/instr/instr9.ogg')
+
+				self.teach_syllable(self.get_path('images/syllables/TI.gif'),self.load_sound(self.get_path('audio/pres/presti.ogg')))
+				self.play_instruction(self.get_path('audio/instr/instr2.ogg'))
+				self.teach_syllable(self.get_path('images/syllables/TI.gif'),ti['1'])
+				self.play_instruction('audio/instr/instr3.ogg')
+
+			if not test:
+				miss = self.test_syllable('ti',ti,8)
+				if miss > 2 and not teach:
+					miss = self.test_syllable('ti',ti,8)
+					if miss > 2:
+						log.add('Q',0,-1)
+						los.save()
+						self.stop()
+				res_teach = 1
+			else:
+				res_teach = -1
+
+			if not (teach or test):
+				self.play_instruction('audio/misc/repeat.ogg')
+				self.teach_syllable(self.get_path('images/syllables/LO.gif'),self.load_sound(self.get_path('audio/pres/preslo.ogg')))
+				self.teach_syllable(self.get_path('images/syllables/MA.gif'),self.load_sound(self.get_path('audio/pres/presma.ogg')))
+				self.teach_syllable(self.get_path('images/syllables/KE.gif'),self.load_sound(self.get_path('audio/pres/preske.ogg')))
+				self.teach_syllable(self.get_path('images/syllables/BU.gif'),self.load_sound(self.get_path('audio/pres/presbu.ogg')))
+
+		else:
+			self.start('Modul K',self.get_path('audio/instr/instr7.ogg'))
+			res_teach = -1
+			miss_teach = -1
+			self.teach_syllable(self.get_path('images/syllables/LO.gif'),self.load_sound(self.get_path('audio/pres/preslo.ogg')))
+			self.teach_syllable(self.get_path('images/syllables/MA.gif'),self.load_sound(self.get_path('audio/pres/presma.ogg')))
+			self.teach_syllable(self.get_path('images/syllables/KE.gif'),self.load_sound(self.get_path('audio/pres/preske.ogg')))
+			self.teach_syllable(self.get_path('images/syllables/BU.gif'),self.load_sound(self.get_path('audio/pres/presbu.ogg')))
+			self.teach_syllable(self.get_path('images/syllables/TI.gif'),self.load_sound(self.get_path('audio/pres/presti.ogg')))
+
+
+		if not teach:
+
+			syllables = {'lo':2,'ma':2,'ke':2,'bu':4,'ti':5}
+			syllable_sound = {}
+			syllable_sound['lo'] = lo
+			syllable_sound['ma'] = ma
+			syllable_sound['ke'] = ke
+			syllable_sound['bu'] = bu
+			syllable_sound['ti'] = ti
+
+			sprites = {}
+			sprites['lo'] = self.load_sprites('lo')
+			sprites['ma'] = self.load_sprites('ma')
+			sprites['ke'] = self.load_sprites('ke')
+			sprites['bu'] = self.load_sprites('bu')
+			sprites['ti'] = self.load_sprites('ti')
+
+			bg_stage = pygame.image.load(self.get_path('images/bg/bg_sky.jpg'))
+
+		if not (teach or test):
+			self.draw(bg_stage)
+			self.play_instruction('audio/instr/instr12.ogg',False)
+
+		if not teach:
+			log_q = Trail_Logger('test_q')
+			stage = Balloon_Engine(log_q,self.surface,bg_stage,syllables,syllable_sound,sprites,self.get_path('data/modul_q'))
+			miss = stage.start()
+
+	def load_sprites(self,t):
+
+		ret = {}
+		ret['g'] = pygame.image.load(self.get_path('images/stage_q/'+t+'_g.gif'))
+		ret['r'] = pygame.image.load(self.get_path('images/stage_q/'+t+'_r.gif'))
+		ret['y'] = pygame.image.load(self.get_path('images/stage_q/'+t+'_y.gif'))
+		return ret

@@ -181,6 +181,25 @@ class Engine:
 		for syllable in self.syllables:
 			self.syllables_called[syllable] = 0
 
+	class Sprite:
+
+		def __init__(self,surface,sprite,(x,y)):
+			self.surface = surface
+			self.pic = sprite
+			self.position = (x,y)
+
+		def move(self,dx,dy):
+			self.position = (self.position[0]+dx,self.position[1]+dy)
+
+		def draw(self):
+			self.surface.blit(self.pic,self.position)
+
+		def get_position(self):
+			return self.position
+
+		def get_sprite(self):
+			return self.pic
+
 
 class OneOutOfTwo(Engine):
 
@@ -430,4 +449,70 @@ class Space_Engine(Engine):
 
 				self.mainClock.tick(24)
 
-		return 0
+		return miss
+
+
+class Balloon_Engine(Engine):
+
+	def __init__(self,log,surface,bg,syllables,syllable_sound,sprites,data,neo=True):
+
+		Engine.__init__(self,surface,bg,syllables,syllable_sound,None,False,data,neo)
+		self.log = log
+		self.sprites = sprites
+
+	def start(self):
+
+		sw = Stop_Watch()
+		self.log.set_top('trail_nr\tsyllable_l\tsyllable_m\tsyllable_r\tsound\tkey_pressed\tresponse\trespones_time')
+		trials = Trial_Data(self.order)
+		n = trials.get_n_trials()
+		side = []
+		miss = 0
+		for i in range(3):
+			size = self.surface.get_size()
+			bg = pygame.transform.scale(self.bg,size)
+			self.surface.blit(bg,(0,0))
+
+			accept = False
+			k = 0
+			while not accept:
+				++k
+				trial_index, trial = trials.get_trial()
+				syllable = trial[1][:2]
+				sprite = trial[2][:2],trial[3][:2],trial[4][:2]
+				if syllable == sprite[0]:
+					correct = 0
+				elif syllable == sprite[1]:
+					correct = 1
+				else:
+					correct = 2
+				if len(side) == 0 or trials.get_n_trials() <= 1 or k > 20:
+					side.append(correct)
+					accept = True
+				elif side[len(side)-1] != correct:
+					side = [correct]
+					accept = True
+				elif len(side) < 2:
+					side.append(correct)
+					accept = True
+
+			trials.accept(trial_index)
+			left = Engine.Sprite(self.surface,self.sprites[sprite[0]]['r'],(self.position_center_width(self.sprites[sprite[0]]['r'])-300,self.surface.get_size()[1]))
+			middle = Engine.Sprite(self.surface,self.sprites[sprite[1]]['y'],(self.position_center_width(self.sprites[sprite[1]]['y']),self.surface.get_size()[1]))
+			right = Engine.Sprite(self.surface,self.sprites[sprite[2]]['g'],(self.position_center_width(self.sprites[sprite[2]]['g'])+300,self.surface.get_size()[1]))
+			
+			self.surface.blit(bg,(0,0))
+			[x.draw() for x in [left,middle,right]]
+			pygame.display.update()
+
+			while (left.get_position()[1] > self.position_center_height(left.get_sprite())):
+				self.surface.blit(bg,(0,0))
+				[x.move(0,-13) for x in [left,middle,right]]
+				[x.draw() for x in [left,middle,right]]
+				pygame.display.update()
+				self.mainClock.tick(24)
+			raw_input('press any key to proceed')
+
+		return miss
+
+
