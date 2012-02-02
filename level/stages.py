@@ -445,7 +445,7 @@ class Stage_A(Stage):
 			sprites['pig']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_a/pig_l.gif'))
 			sprites['pig']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_a/pig_r.gif'))
 
-			bg_stage = pygame.image.load(os.path.join(self.path,'images/bg/bg_landscape.jpg'))
+			bg_stage = pygame.image.load(os.path.join(self.path,'images/bg/bg_landscape_2.jpg'))
 
 			log_a = Trail_Logger('test_a')
 			stage = OneOutOfTwo(log_a,self.surface,bg_stage,sprites,syllables,syllable_images,syllable_sound,random_order=False,order=os.path.join(self.path,'data/modul_a'))
@@ -475,8 +475,8 @@ class Stage_A(Stage):
 		else:
 			res_test = -1
 
-		log_a.save()
 		log.add('A',res_teach,res_test)
+		log.save()
 
 		if not (teach or test):
 			image = pygame.image.load(os.path.join(self.path,'images/bg/bg_wave.jpg'))
@@ -568,23 +568,23 @@ class Stage_U(Stage):
 
 			sprites = {}
 			sprites['fish1'] = {}
-			sprites['fish1']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish1_R.gif'))
-			sprites['fish1']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish1_L.gif'))
+			sprites['fish1']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_u/Delphin_R.gif'))
+			sprites['fish1']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_u/Delphin_L.gif'))
 			sprites['fish2'] = {}
-			sprites['fish2']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish2_R.gif'))
-			sprites['fish2']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish2_L.gif'))
+			sprites['fish2']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_u/Fisch_blau_R.gif'))
+			sprites['fish2']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_u/Fisch_blau_L.gif'))
 			sprites['fish3'] = {}
-			sprites['fish3']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish3_R.gif'))
-			sprites['fish3']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish3_L.gif'))
+			sprites['fish3']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_u/Fisch_orange_R.gif'))
+			sprites['fish3']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_u/Fisch_orange_L.gif'))
 			sprites['fish4'] = {}
-			sprites['fish4']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish4_R.gif'))
-			sprites['fish4']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish4_L.gif'))
+			sprites['fish4']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fisch_pink_R.gif'))
+			sprites['fish4']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fisch_pink_L.gif'))
 			sprites['fish5'] = {}
-			sprites['fish5']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish5_R.gif'))
-			sprites['fish5']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish5_L.gif'))
+			sprites['fish5']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_u/Fisch_tuerkis_R.gif'))
+			sprites['fish5']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_u/Fisch_tuerkis_L.gif'))
 			sprites['fish6'] = {}
-			sprites['fish6']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish6_R.gif'))
-			sprites['fish6']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_u/fish6_L.gif'))
+			sprites['fish6']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_u/Hai_R.gif'))
+			sprites['fish6']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_u/Hai_L.gif'))
 
 			bg_stage = pygame.image.load(os.path.join(self.path,'images/bg/underwater.gif'))
 			
@@ -800,6 +800,27 @@ class Stage_Q(Stage):
 			log_q = Trail_Logger('test_q')
 			stage = Balloon_Engine(log_q,self.surface,bg_stage,syllables,syllable_sound,sprites,self.get_path('data/modul_q'))
 			miss = stage.start()
+			if miss > 3:
+				miss = stage.start()
+				if miss > 3:
+					log.add('Q',res_teach,0)
+					log.save()
+					log_q.save()
+					if rep:
+						self.stop()
+					else:
+						self.end()
+			log_q.save()
+			res_test = 1
+		else:
+			res_test = -1
+
+		log.add('Q',res_teach,res_test)
+		log.save()
+
+		if not (teach or test):
+			self.draw(pygame.image.load(os.path.join(self.path,'images/bg/bg_wave.jpg')))
+			self.play_instruction('audio/final/final1.ogg',False)
 
 	def load_sprites(self,t):
 

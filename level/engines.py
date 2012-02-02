@@ -197,6 +197,9 @@ class Engine:
 		def get_position(self):
 			return self.position
 
+		def set_position(self,x,y):
+			self.position = (x,y)
+
 		def get_sprite(self):
 			return self.pic
 
@@ -468,7 +471,7 @@ class Balloon_Engine(Engine):
 		n = trials.get_n_trials()
 		side = []
 		miss = 0
-		for i in range(3):
+		for i in range(n):
 			size = self.surface.get_size()
 			bg = pygame.transform.scale(self.bg,size)
 			self.surface.blit(bg,(0,0))
@@ -501,6 +504,16 @@ class Balloon_Engine(Engine):
 			middle = Engine.Sprite(self.surface,self.sprites[sprite[1]]['y'],(self.position_center_width(self.sprites[sprite[1]]['y']),self.surface.get_size()[1]))
 			right = Engine.Sprite(self.surface,self.sprites[sprite[2]]['g'],(self.position_center_width(self.sprites[sprite[2]]['g'])+300,self.surface.get_size()[1]))
 			
+			if correct == 0:
+				sprite_correct = left
+				sprite_wrong = [middle,right]
+			elif correct == 1:
+				sprite_correct = middle
+				sprite_wrong = [left,right]
+			elif correct == 2:
+				sprite_correct = right
+				sprite_wrong = [left,middle]
+			
 			self.surface.blit(bg,(0,0))
 			[x.draw() for x in [left,middle,right]]
 			pygame.display.update()
@@ -511,8 +524,82 @@ class Balloon_Engine(Engine):
 				[x.draw() for x in [left,middle,right]]
 				pygame.display.update()
 				self.mainClock.tick(24)
-			raw_input('press any key to proceed')
+			#raw_input('press any key to proceed')
+
+			self.syllable_sounds[syllable][str(random.randint(1,3))].play()
+			sw.start()
+
+			f = True
+			key_pressed = False
+			pressed = -1
+
+			while f:
+
+				for event in pygame.event.get():
+					self.standart_event(event)
+					if event.type == KEYDOWN:
+						try:
+							if chr(event.key) == 'e':
+								sw.stop()
+								key_pressed = True
+								pressed = 0
+							elif chr(event.key) == 'n':
+								sw.stop()
+								key_pressed = True
+								pressed = 2
+							elif event.key == K_SPACE:
+								sw.stop()
+								key_pressed = True
+								pressed = 1
+						except ValueError:
+							print(event.key)
+
+				if key_pressed:
+					log_line = [trial[0],sprite[0],sprite[1],sprite[2],syllable,pressed,int(pressed==correct),sw.get_time()]
+					self.log.add(log_line)
+					if pressed == correct:
+						self.syllable_sounds[syllable]['pos'+str(random.randint(1,4))].play()
+						self.balloon_wrong_exit(sprite_correct,sprite_wrong)
+						pygame.time.wait(2100)
+						self.balloon_correct_exit(sprite_correct)
+						f = False
+					else:
+						self.syllable_sounds[syllable]['neg'+str(random.randint(1,2))].play()
+						miss += 1
+						self.balloon_wrong_exit(sprite_correct,sprite_wrong)
+						pygame.time.wait(2600)
+						self.balloon_wrong_enter(sprite_correct,sprite_wrong)
+						pygame.event.clear()
+						self.syllable_sounds[syllable][str(random.randint(1,3))].play()
+						sw.start()
+						key_pressed = False
 
 		return miss
+	
+	def balloon_wrong_exit(self,right,wrong):
 
+		while wrong[0].get_position()[1] > -1*(wrong[0].get_sprite().get_size()[1]):
+			self.surface.blit(self.bg,(0,0))
+			[x.move(0,-13) for x in [wrong[0],wrong[1]]]
+			[x.draw() for x in [right,wrong[0],wrong[1]]]
+			pygame.display.update()
+			self.mainClock.tick(24)
 
+	def balloon_wrong_enter(self,right,wrong):
+
+		[x.set_position(x.position[0],self.surface.get_size()[1]) for x in [wrong[0],wrong[1]]]
+		while wrong[0].get_position()[1] > right.get_position()[1]:
+			self.surface.blit(self.bg,(0,0))
+			[x.move(0,-13) for x in [wrong[0],wrong[1]]]
+			[x.draw() for x in [right,wrong[0],wrong[1]]]
+			pygame.display.update()
+			self.mainClock.tick(24)
+
+	def balloon_correct_exit(self,sprite):
+
+		while sprite.position[1] > -1*sprite.pic.get_size()[1]:
+			self.surface.blit(self.bg,(0,0))
+			sprite.move(0,-13)
+			sprite.draw()
+			pygame.display.update()
+			self.mainClock.tick(24)
