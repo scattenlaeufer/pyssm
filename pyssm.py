@@ -18,7 +18,7 @@ def end():
 	print('\n             .,-:;//;:=,\n          . :H@@@MM@M#H/.,+%;,\n       ,/X+ +M@@M@MM%=,-%HMMM@X/,\n     -+@MM; $M@@MH+-,;XMMMM@MMMM@+-$\n    ;@M@@M- XM@X;. -+XXXXXHHH@M@M#@/.\n  ,%MM@@MH ,@%=             .---=-=:=,.\n  =@#@@@MX.,                -%HX$$%%%:;\n =-./@M@M$                   .;@MMMM@MM:\n X@/ -$MM/                    . +MM@@@M$\n,@M@H: :@:                    . =X#@@@@-\n,@@@MMX, .                    /H- ;@M@M=\n.H@@@@M@+,                    %MM+..%#$.\n /MMMM@MMH/.                  XM@MH; =;\n  /%+%$XHH@$=              , .H@@@@MX,\n  .=--------.           -%H.,@@@@@MX,\n  .%MM@@@HHHXX$$$%+- .:$MMX =M@@MM%.\n    =XMMM@MM@MM#H;,-+HMM@M+ /MMMX=\n      =%@M@M#@$-.=$@MM@@@M; %M%=\n        ,:+$+-,/H#MMMMMMM@= =,\n              =++%%%%+/:-.')
 	print('\nSorry, but the cake was a lie.')
 
-def normal(teach,test):
+def normal(teach,test,rep):
 	result = log.analyze()
 	if result[0] == '0':
 		cake()
@@ -54,7 +54,7 @@ def normal(teach,test):
 log = Log_Handler()
 
 if len(sys.argv) == 1:
-	normal(False,False)
+	normal(False,False,False)
 else:
 	if '--help' in sys.argv:
 		print('\nHelp\n\nfollowing flags accepted:')

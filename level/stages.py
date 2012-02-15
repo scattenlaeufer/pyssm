@@ -505,9 +505,9 @@ class Stage_U(Stage):
 
 		if not (teach or test):
 			if rep:
-				self.start('Modul B','audio/instr/instr9b.ogg')
+				self.start('Modul C','audio/instr/instr9b.ogg')
 			else:
-				self.start('Modul D',self.get_path('audio/instr/instr9.ogg'))
+				self.start('Modul U',self.get_path('audio/instr/instr9.ogg'))
 			res_teach = -1
 			self.teach_syllable('images/syllables/A.gif',self.load_sound(os.path.join(self.path,'audio/pres/preslo.ogg')))
 			self.teach_syllable('images/syllables/I.gif',self.load_sound(os.path.join(self.path,'audio/pres/presma.ogg')))
@@ -517,7 +517,7 @@ class Stage_U(Stage):
 		res_teach = -1
 
 		if not (test or teach):
-			image = pygame.image.load(os.path.join(self.path,'images/bg/underwater.gif'))
+			image = pygame.image.load(os.path.join(self.path,'images/bg/bg_underwater.gif'))
 			self.draw(image)
 			self.play_instruction('audio/instr/instr11b.ogg',False)
 
@@ -568,10 +568,10 @@ class Stage_U(Stage):
 			stage = OneOutOfTwo(log_u,self.surface,bg_stage,sprites,syllables,syllable_images,syllable_sound,random_order=False,order=os.path.join(self.path,'data/modul_u'))
 			miss = 0
 			miss = stage.start(15)
-			if miss > 3 and not test:
+			if miss > 4 and not test:
 				miss = 0
 				miss = stage.start(15)
-				if miss > 3:
+				if miss > 4:
 					log_u.save()
 					if rep:
 						log.add('U',res_teach,0)
@@ -687,9 +687,9 @@ class Stage_F(Stage):
 			log_f = Trail_Logger('test_f')
 			stage = Space_Engine(log_f,self.surface,bg_stage,syllables,syllable_sound,sprites,self.get_path('data/modul_f'))
 			miss = stage.start()
-			if miss > 3 and not test:
+			if miss > 2 and not test:
 				miss = stage.start()
-				if miss > 3:
+				if miss > 2:
 					log_f.save()
 					if rep:
 						log.add('F',res_teach,0)
@@ -806,9 +806,9 @@ class Stage_Q(Stage):
 			log_q = Trail_Logger('test_q')
 			stage = Balloon_Engine(log_q,self.surface,bg_stage,syllables,syllable_sound,sprites,self.get_path('data/modul_q'))
 			miss = stage.start()
-			if miss > 3:
+			if miss > 4:
 				miss = stage.start()
-				if miss > 3:
+				if miss > 4:
 					log.add('Q',res_teach,0)
 					log.save()
 					log_q.save()
