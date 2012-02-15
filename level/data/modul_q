@@ -1,15 +1,18 @@
-1	lo1.wav	lo_r.gif	ti_y.gif	ke_g.gif	97	0	0,8	0,8	true	false	false	lopos1.wav	loneg1.wav
-2	bu2.wav	ti_r.gif	bu_y.gif	ma_g.gif	104	0,8	0	0,8	false	true	false	bupos2.wav	buneg1.wav
-3	ti3.wav	lo_r.gif	ma_y.gif	ti_g.gif	39	0,8	0,8	0	false	false	true	tipos3.wav	tineg1.wav
-4	ma1.wav	ma_r.gif	ke_y.gif	bu_g.gif	97	0	0,8	0,8	true	false	false	mapos4.wav	maneg1.wav
-5	bu2.wav	ke_r.gif	lo_y.gif	bu_g.gif	39	0,8	0,8	0	false	false	true	bupos1.wav	buneg2.wav
-6	ti3.wav	ti_r.gif	bu_y.gif	ke_g.gif	97	0	0,8	0,8	true	false	false	tipos2.wav	tineg2.wav
-7	lo2.wav	bu_r.gif	ma_y.gif	lo_g.gif	39	0,8	0,8	0	false	false	true	lopos3.wav	loneg2.wav
-8	ti2.wav	lo_r.gif	bu_y.gif	ti_g.gif	39	0,8	0,8	0	false	false	true	tipos4.wav	tineg1.wav
-9	ke3.wav	ti_r.gif	ke_y.gif	ma_g.gif	104	0,8	0	0,8	false	true	false	kepos1.wav	keneg1.wav
-10	bu1.wav	bu_r.gif	ti_y.gif	ke_g.gif	97	0	0,8	0,8	true	false	false	bupos2.wav	buneg1.wav
-11	ti2.wav	ma_r.gif	ti_y.gif	lo_g.gif	104	0,8	0	0,8	false	true	false	tipos3.wav	tineg2.wav
-12	bu3.wav	ke_r.gif	lo_y.gif	bu_g.gif	39	0,8	0,8	0	false	false	true	bupos4.wav	buneg2.wav
-13	ma2.wav	ti_r.gif	ma_y.gif	lo_g.gif	104	0,8	0	0,8	false	true	false	mapos1.wav	maneg2.wav
-14	ke2.wav	ke_r.gif	bu_y.gif	ti_g.gif	97	0	0,8	0,8	true	false	false	kepos2.wav	keneg2.wav
-15	ti1.wav	lo_r.gif	ti_y.gif	ma_g.gif	104	0,8	0	0,8	false	true	false	tipos3.wav	tineg1.wav
+1	a	a	o	i
+2	a	o	i	a
+3	i	o	i	a
+4	i	a	o	i
+5	o	o	i	a
+6	o	a	o	i
+7	o	i	a	o
+8	me	me	fa	ri
+9	me	ko	me	fa
+10	ko	me	ko	ri
+11	ko	fa	ri	ko
+12	ri	ri	me	ko
+13	ri	ko	me	ri
+14	fa	fa	ko	ri
+15	fa	me	fa	ko
+16	fa	ko	ri	fa
+17	fa	fa	me	ri
+18	fa	me	fa	ko

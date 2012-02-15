@@ -22,28 +22,28 @@ def normal(teach,test):
 	result = log.analyze()
 	if result[0] == '0':
 		cake()
-		stage = Stage_A(log,teach,test)
+		stage = Stage_A(log,teach,test,rep)
 	elif result[0] == 'A':
 		if result[1]:
 			cake()
 			stage = Stage_A(log,teach,test,True)
 		else:
 			cake()
-			stage = Stage_F(log,teach,test)
+			stage = Stage_F(log,teach,test,rep)
 	elif result[0] == 'F':
 		if result[1]:
 			cake()
 			stage = Stage_F(log,teach,test,True)
 		else:
 			cake()
-			stage = Stage_U(log,teach,test)
+			stage = Stage_U(log,teach,test,rep)
 	elif result[0] == 'U':
 		if result[1]:
 			cake()
 			stage = Stage_U(log,teach,test,True)
 		else:
 			cake()
-			stage = Stage_Q(log,teach,test)
+			stage = Stage_Q(log,teach,test,rep)
 	elif result[0] == 'Q':
 		if result[1]:
 			cake()

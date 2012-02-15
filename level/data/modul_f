@@ -1,14 +1,12 @@
-1	ma1.wav	ufoma.gif	ufoke.gif	97	mapos1.wav	0	true	0,4	false	maneg1.wav
-2	ke1.wav	ufoke.gif	ufolo.gif	97	kepos4.wav	0	true	0,4	false	keneg1.wav
-3	ma2.wav	ufolo.gif	ufoma.gif	39	mapos2.wav	0,4	false	0	true	maneg2.wav
-4	lo1.wav	ufolo.gif	ufoke.gif	97	lopos3.wav	0	true	0,4	false	loneg1.wav
-5	ke2.wav	ufoma.gif	ufoke.gif	39	kepos2.wav	0,4	false	0	true	keneg2.wav
-6	lo2.wav	ufoke.gif	ufolo.gif	39	lopos1.wav	0,4	false	0	true	loneg2.wav
-7	ma3.wav	ufoke.gif	ufoma.gif	39	mapos3.wav	0,4	false	0	true	maneg1.wav
-8	ma1.wav	ufoma.gif	ufolo.gif	97	mapos4.wav	0	true	0,4	false	maneg2.wav
-9	ke3.wav	ufoke.gif	ufoma.gif	97	kepos1.wav	0	true	0,4	false	keneg1.wav
-10	ke3.wav	ufolo.gif	ufoke.gif	39	kepos2.wav	0,4	false	0	true	keneg1.wav
-11	lo1.wav	ufolo.gif	ufoma.gif	97	lopos4.wav	0	true	0,4	false	loneg2.wav
-12	ke1.wav	ufoke.gif	ufolo.gif	97	kepos3.wav	0	true	0,4	false	keneg2.wav
-13	lo2.wav	ufoma.gif	ufolo.gif	39	lopos1.wav	0,4	false	0	true	loneg1.wav
-14	ke2.wav	ufolo.gif	ufoke.gif	39	kepos2.wav	0,4	false	0	true	keneg2.wav
+1	a	a	i
+2	a	a	i
+3	a	a	i
+4	a	i	a
+5	a	i	a
+6	a	i	a
+7	i	a	i
+8	i	a	i
+9	i	a	i
+10	i	i	a
+11	i	i	a
+12	i	i	a

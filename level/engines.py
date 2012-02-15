@@ -250,9 +250,9 @@ class OneOutOfTwo(Engine):
 				while not accept:
 					
 					trial_index,trial = trials.get_trial()
-					syllable_correct = trial[4][:2]
-					syllable_left = string.lower(trial[5][:2])
-					syllable_right = string.lower(trial[6][:2])
+					syllable_correct = trial[2]
+					syllable_left = string.lower(trial[3])
+					syllable_right = string.lower(trial[4])
 					syllable_str = [syllable_left,syllable_right]
 					if syllable_correct == syllable_left:
 						correct = 0
@@ -271,7 +271,7 @@ class OneOutOfTwo(Engine):
 								accept = True
 
 				trials.accept(trial_index)
-				sprite = trial[1][:-4]
+				sprite = trial[1]
 				sprite_str = sprite[:-2]
 				direction_str = string.lower(sprite[-1:])
 				if direction_str == 'l':
@@ -383,8 +383,8 @@ class Space_Engine(Engine):
 			while not accept:
 
 				trial_index,trial = trials.get_trial()
-				syllable = trial[1][:2]
-				sprite = trial[2][3:5],trial[3][3:5]
+				syllable = trial[1]
+				sprite = trial[2],trial[3]
 				if syllable == sprite[0]:
 					correct = 0
 				else:
@@ -481,8 +481,8 @@ class Balloon_Engine(Engine):
 			while not accept:
 				++k
 				trial_index, trial = trials.get_trial()
-				syllable = trial[1][:2]
-				sprite = trial[2][:2],trial[3][:2],trial[4][:2]
+				syllable = trial[1]
+				sprite = trial[2],trial[3],trial[4]
 				if syllable == sprite[0]:
 					correct = 0
 				elif syllable == sprite[1]:
