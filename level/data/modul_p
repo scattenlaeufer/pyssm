@@ -1,16 +1,19 @@
-1	ke4.gif	ke4.gif	ke1.wav	1	kepos1.wav	keneg1.wav	kemiss.wav
-2	ti2.gif	bu2.gif	bu2.wav	0	bu1.wav	buneg2.wav	bumiss.wav
-3	su3.gif	su3.gif	su3.wav	1	supos2.wav	suneg1.wav	sumiss.wav
-4	lo4.gif	lo4.gif	lo1.wav	1	lopos3.wav	loneg2.wav	lomiss.wav
-5	bu1.gif	ma1.gif	ma2.wav	0	bu1.wav	maneg1.wav	mamiss.wav
-6	pa2.gif	pa2.gif	pa3.wav	1	papos4.wav	paneg2.wav	pamiss.wav
-7	su3.gif	ti3.gif	ti1.wav	0	bu1.wav	tineg1.wav	timiss.wav
-8	ma4.gif	ma4.gif	ma1.wav	1	mapos1.wav	maneg2.wav	mamiss.wav
-9	su1.gif	su1.gif	su3.wav	1	supos3.wav	suneg1.wav	sumiss.wav
-10	ke2.gif	lo2.gif	lo3.wav	0	bu1.wav	loneg2.wav	lomiss.wav
-11	pa3.gif	pa3.gif	pa2.wav	1	papos2.wav	paneg1.wav	pamiss.wav
-12	su4.gif	su4.gif	su1.wav	1	supos4.wav	suneg2.wav	sumiss.wav
-13	ti1.gif	ti1.gif	ti2.wav	1	tipos1.wav	tineg2.wav	timiss.wav
-14	pa2.gif	su2.gif	su2.wav	0	bu1.wav	suneg1.wav	sumiss.wav
-15	bu3.gif	bu3.gif	bu3.wav	1	bupos2.wav	buneg1.wav	bumiss.wav
-16	su1.gif	ke1.gif	ke2.wav	0	bu1.wav	keneg2.wav	kemiss.wav
+1	a	a	l
+2	a	a	r
+3	a	a	l
+4	a	i	r
+5	i	i	l
+6	i	i	r
+7	i	i	l
+8	i	a	r
+9	me	me	l
+10	me	me	r
+11	me	ri	l
+12	ko	ko	r
+13	ko	ko	l
+14	ko	me	r
+15	ri	ri	l
+16	ri	ri	r
+17	ri	ri	l
+18	ri	me	r
+19	ri	ko	l

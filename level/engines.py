@@ -18,14 +18,15 @@ class Engine:
 		self.curser_unvisible = False
 
 		self.syllable_images = syllable_images
-		self.syllables = syllables.keys()
 		self.syllables_allowed = syllables
 		self.syllable_sounds = syllable_sounds
-		self.n_syllables = len(self.syllables)
 		self.syllables_called = {}
 
-		for syllable in self.syllables:
-			self.syllables_called[syllable] = 0
+		if syllables != None:
+			self.n_syllables = len(self.syllables)
+			self.syllables = syllables.keys()
+			for syllable in self.syllables:
+				self.syllables_called[syllable] = 0
 
 		if neo:
 			self.left = u'xvlcwuiaeoüöäpzXVLCWUIAEOÜÖÄPZ'
@@ -603,3 +604,123 @@ class Balloon_Engine(Engine):
 			sprite.draw()
 			pygame.display.update()
 			self.mainClock.tick(24)
+
+
+class CatchMeIfYouCan(Engine):
+
+	def __init__(self,log,surface,bg,syllable_sounds,miss,sprites,order):
+
+		Engine.__init__(self,surface,bg,None,syllable_sounds,None,False,order,True)
+		self.log = log
+		self.sprites = sprites
+		self.miss = miss
+
+	def play_instruction(self,instr1,instr2,instr_image):
+		self.surface.blit(instr_image,(0,0))
+		pygame.display.update()
+		instr1.play()
+		pygame.time.wait(5000)
+		instr2.play()
+		pygame.time.wait(15000)
+	
+	def start(self):
+
+		self.sw = Stop_Watch()
+		self.log.set_top('tril_nr\tsound\tsprite\tdirection\tpressed\tresponse_time')
+		trials = Trial_Data(self.order)
+		n = trials.get_n_trials()
+		miss = 0
+
+		for i in range(n):
+			trial_index, trial = trials.get_trial()
+			trials.accept(trial_index)
+			sprite = self.sprites[trial[1]][trial[3]]
+			sound = trial[2]
+			correct = trial[1] == trial[2]
+			retry = True
+			while retry:
+				pressed = self.fly_through(sprite,trial[3],self.syllable_sounds[sound][str(random.randint(1,3))])
+				log_line = [trial[0],sound,trial[1],trial[3],pressed,self.sw.get_first_time()]
+				if correct:
+					self.surface.blit(self.bg,(0,0))
+					self.surface.blit(sprite,(self.position_center_width(sprite),self.position_center_height(sprite)))
+					pygame.display.update()
+					if pressed:
+						retry = False
+						self.syllable_sounds[sound]['pos'+str(random.randint(1,4))].play()
+						pygame.time.wait(3700)
+					else:
+						self.syllable_sounds[sound]['miss'].play()
+						pygame.time.wait(5500)
+						miss += 1
+				else:
+					if pressed:
+						self.surface.blit(self.bg,(0,0))
+						self.surface.blit(self.sprites[trial[2]][trial[3]],(self.position_center_width(sprite),self.position_center_height(sprite)))
+						pygame.display.update()
+						self.syllable_sounds[sound]['neg'+str(random.randint(1,2))].play()
+						pygame.time.wait(4500)
+						miss += 1
+					else:
+						retry = False
+
+		return miss
+
+
+
+
+	
+	def fly_through(self,sprite,direction,sound):
+
+		size_sprite = sprite.get_size()[0]
+		size_surface = self.surface.get_size()[0]
+
+		if direction == 'l':
+			x0 = size_surface
+			dx = -5
+		else:
+			x0 = -1*size_sprite
+			dx = 5
+
+		s = Engine.Sprite(self.surface,sprite,(x0,self.position_center_height(sprite)))
+		move = True
+		moved = 0
+		while move:
+			s.move(dx,0)
+			self.surface.blit(self.bg,(0,0))
+			s.draw()
+			pygame.display.update()
+			moved += abs(dx)
+			if moved > size_sprite:
+				move = False
+			self.mainClock.tick(36)
+
+		self.sw.start()
+		sound.play()
+
+		move = True
+		pressed = False
+		while move:
+			s.move(dx,0)
+			self.surface.blit(self.bg,(0,0))
+			s.draw()
+			pygame.display.update()
+			if direction == 'l':
+				if s.get_position()[0] < -1*size_sprite:
+					move = False
+			else:
+				if s.get_position()[0] > size_surface + size_sprite:
+					move = False
+
+			for event in pygame.event.get():
+				self.standart_event(event)
+				if event.type == KEYDOWN:
+					if event.key == K_SPACE:
+						self.sw.stop()
+						pressed = True
+					else:
+						print(chr(event.key))
+			self.mainClock.tick(36)
+		self.sw.stop()
+
+		return pressed

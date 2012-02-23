@@ -6,19 +6,27 @@ class Stop_Watch(threading.Thread):
 
 	def __init__(self):
 		threading.Thread.__init__(self)
+		self.first = False
 	
 
 	def start(self):
 		self.t_start = time.time()
+		self.first = True
 	
 	def stop(self):
 		self.t_stop = time.time()
+		if self.first:
+			self.first_time = self.t_stop - self.t_start
+			self.first = False
 	
 	def __str__(self):
 		return str(self.t_stop - self.t_start)
 
 	def get_time(self,i=4):
 		return round(self.t_stop-self.t_start,i)
+
+	def get_first_time(self,i=4):
+		return round(self.first_time,i)
 
 
 class Instruction:

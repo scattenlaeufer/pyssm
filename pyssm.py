@@ -3,7 +3,7 @@
 import pygame, sys, time, random
 from helpers.log import Log_Handler
 from pygame.locals import *
-from level.stages import Stage_A, Stage_U, Stage_F, Stage_Q
+from level.stages import Stage_A, Stage_U, Stage_F, Stage_Q, Stage_P
 
 print(u'ssm training version 0.1\nwirtten by Björn Guth')
 
@@ -92,6 +92,8 @@ else:
 			stage = Stage_F(log,teach,test,rep)
 		elif start == 'q':
 			stage = Stage_Q(log,teach,test,rep)
+		elif start == 'p':
+			stage = Stage_P(log,teach,test,rep)
 	else:
 		normal(teach,test)
 	
