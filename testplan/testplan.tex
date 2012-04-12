@@ -1,0 +1,108 @@
+\documentclass[12pt,a4paper]{article}
+%\usepackage{bookman}
+%\usepackage{newcent}
+%\usepackage{palantino}
+%\usepackage{times}
+\title{Beta-Test pyssm 0.2}
+\usepackage{bera}
+\usepackage{ngerman}
+\usepackage[T1]{fontenc}
+\usepackage{wasysym}
+\setlength{\parindent}{0cm}
+\setlength{\parskip}{1ex}
+\usepackage{listings}
+\usepackage{hyperref}
+\newcommand{\pyssmtest}[2]{
+\subsection{#1}
+	Maximal erlaubte Fehler: #2\\
+	\Square \hspace{0.2cm} Bestanden beim ersten Versuch\\
+	\Square \hspace{0.2cm} Bestanden beim zweiten Versuch\\
+	\Square \hspace{0.2cm} nicht bestanden nach zweitem Versuch\\
+	\TextField[width=15cm,multiline]{Aufgetretene Fehler:\\}\\
+	\TextField[width=15cm,multiline]{Sonstige Anmerkungen:\\}\\}
+
+
+\begin{document}
+\begin{Form}
+{\Huge Beta-Test pyssm 0.2}\vspace{0.5cm}\\
+Bei Fragen und Anmerkungen stehe ich über bjoern.guth@rwth-aachen.de jeder Zeit zur Verfügung.\\\\
+Kontakt für evtl. Rückfragen:\\
+\TextField[name=Name,width=10cm]{Name:}\\
+\TextField[name=Name,width=10cm]{Mail:\hspace{.3cm}}\\
+
+\setcounter{section}{-3}
+\section{Installation}
+	pyssm muss in folgender Reihenfolge installiert werden:
+	\begin{enumerate}
+		\item python-2.7.2.msi \\ Installationspfad notieren, da der später noch gebraucht wird.\vspace{.5cm}\\\underline{\hspace{15cm}}
+		\item pygame-1.9.1.win32-py2.7.msi
+		\item pyssm-0.2.win32.exe
+	\end{enumerate}
+
+\section{Starten von pyssm vom Terminal}
+Um die von python ausgegebenen Fehlermeldungen ausgegeben zu bekommen, muss man pyssm von einem Terminal aus starten. Gehe hierfür einfach die folgenden Schritte durch:
+\begin{itemize}
+	\item Klicke auf Start und start cmd.exe, indem du in der Suchzeile
+		\begin{lstlisting}
+			cmd.exe
+		\end{lstlisting}
+		eingibst. 
+	\item Ändere den aktuellen Ordner, indem du
+	\begin{lstlisting}
+		cd <Installationspfad>\Scripts
+	\end{lstlisting}
+	eingibst. Ersetze <Installationspfad> durch den Pfad, den du während der Installation notiert hast.
+	\item Jetzt kannst du 	pyssm durch die Engabe von
+		\begin{lstlisting}
+			pyssm.py
+		\end{lstlisting}
+	starten.
+	\item Um ein bestimmtes Modul zu starten, kannst du pyssm.py mit der Option -s und dem Buchstaben des Moduls starten. Der Buchstabe des Moduls muss als Kleinbuchstabe eingegeben werden! (um Modul Z zu starten, müsstest du also pyssm.py -s z eingeben.
+\end{itemize}
+	cmd läuft so auch weietr, nachden pyssm aus welchen Gründen auch immer beendet wird.
+
+\section{Interpretation von Fehlermeldungen}
+	Um einen Bug möglichst schnell beheben zu können, brauche ich ein paar Informationen über den aufgetretenen Fehler. Diese können den Fehlermeldungen, den s.g. Exceptions, entnommen werden. Eine Exception gibt einen Text im Terminal aus, der wie folgt ausschaut:
+	\begin{lstlisting}
+	Traceback (most recent call last):
+	  File "`./pyssm.py"', line 126, in <module>
+	    stage = Stage_Q(log,teach,test,rep,neo)
+	  File "`/home/bjoern/hiwi/pyssm/level/stages.py"', line 852, in __init__
+	    stage = Balloon_Engine(log_q,self.get_path('data/modul_q',neo=neo))
+	TypeError: get_path() got an unexpected keyword argument 'neo'
+	\end{lstlisting}
+	Wichtig sind davon für mich zum einen die letzte Zeile, die mit File beginnt, da diese mir sagt, an welcher Stelle in welcher Datei ein Fehler aufgetreten ist, und die letzte Zeile, da hier der Fehler selbst beschrieben wird.
+
+\section{Modul A}
+\pyssmtest{KO}{2}
+\pyssmtest{ME}{2}
+\pyssmtest{Test Modul A}{2}
+
+\section{Modul F}
+\pyssmtest{A}{2}
+\pyssmtest{I}{2}
+\pyssmtest{Test Modul F}{2}
+
+\section{Modul U}
+\pyssmtest{Test Modul U}{4}
+
+\section{Modul P}
+\pyssmtest{RI}{2}
+\pyssmtest{Test Modul P}{4}
+
+\section{Modul L}
+\pyssmtest{O}{2}
+\pyssmtest{Test Modul O}{3}
+
+\section{Modul Q}
+\pyssmtest{FA}{2}
+\pyssmtest{Test Modul Q}{4}
+
+\section{Modul B}
+\pyssmtest{E}{2}
+\pyssmtest{Test Modul B}{4}
+
+\section{Modul Z}
+\pyssmtest{Test Modul Z}{5}
+\end{Form}
+\end{document}

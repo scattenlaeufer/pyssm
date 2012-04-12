@@ -1,17 +1,18 @@
-1	monster1.gif	su1.wav	su_left_trans.gif	pa_cent_trans.gif	lo_right_trans.gif	97	true	false	false	supos1.wav	suneg1.wav
-2	monster5.gif	fe1.wav	ke_left_trans.gif	fe_cent_trans.gif	ti_right_trans.gif	104	false	true	false	fepos2.wav	feneg2.wav
-3	monster3.gif	bu2.wav	bu_left_trans.gif	su_cent_trans.gif	ma_right_trans.gif	97	true	false	false	bupos3.wav	buneg1.wav
-4	monster2.gif	su2.wav	ke_left_trans.gif	lo_cent_trans.gif	su_right_trans.gif	39	false	false	true	supos4.wav	suneg2.wav
-5	monster1.gif	ti1.wav	lo_left_trans.gif	ti_cent_trans.gif	bu_right_trans.gif	104	false	true	false	tipos1.wav	tineg1.wav
-6	monster4.gif	fe2.wav	fe_left_trans.gif	ma_cent_trans.gif	pa_right_trans.gif	97	true	false	false	fepos2.wav	feneg2.wav
-7	monster2.gif	pa1.wav	pa_left_trans.gif	lo_cent_trans.gif	ti_right_trans.gif	97	true	false	false	papos3.wav	paneg1.wav
-8	monster4.gif	bu1.wav	ma_left_trans.gif	ke_cent_trans.gif	bu_right_trans.gif	39	false	false	true	bupos4.wav	buneg2.wav
-9	monster3.gif	fe3.wav	fe_left_trans.gif	su_cent_trans.gif	lo_right_trans.gif	97	true	false	false	fepos1.wav	feneg1.wav
-10	monster4.gif	pa2.wav	bu_left_trans.gif	pa_cent_trans.gif	ke_right_trans.gif	104	false	true	false	papos2.wav	paneg2.wav
-11	monster3.gif	su3.wav	ma_left_trans.gif	lo_cent_trans.gif	su_right_trans.gif	39	false	false	true	supos3.wav	suneg1.wav
-12	monster5.gif	ma1.wav	ti_left_trans.gif	ma_cent_trans.gif	su_right_trans.gif	104	false	true	false	mapos4.wav	maneg2.wav
-13	monster2.gif	fe3.wav	pa_left_trans.gif	su_cent_trans.gif	fe_right_trans.gif	39	false	false	true	fepos1.wav	feneg1.wav
-14	monster1.gif	lo1.wav	su_left_trans.gif	fe_cent_trans.gif	lo_right_trans.gif	39	false	false	true	lopos2.wav	loneg2.wav
-15	monster1.gif	ke1.wav	ke_left_trans.gif	lo_cent_trans.gif	bu_right_trans.gif	97	true	false	false	kepos3.wav	keneg1.wav
-16	monster5.gif	ti2.wav	su_left_trans.gif	ti_cent_trans.gif	lo_right_trans.gif	104	false	true	false	tipos4.wav	tineg2.wav
-17	monster1.gif	fe1.wav	ti_left_trans.gif	fe_cent_trans.gif	pa_right_trans.gif	104	false	true	false	fepos1.wav	feneg1.wav
+1	a	a	e	i	monster1	l
+2	a	o	a	e	monster2	r
+3	e	i	o	e	monster3	l
+4	e	e	a	o	monster4	r
+5	e	a	e	o	monster2	l
+6	e	o	i	e	monster3	r
+7	e	e	i	a	monster4	l
+8	i	a	i	o	monster1	r
+9	i	e	o	i	monster3	l
+10	o	o	a	i	monster4	r
+11	o	i	o	e	monster1	l
+12	fa	me	ko	fa	monster2	r
+13	fa	fa	ri	ko	monster4	l
+14	fa	ko	fa	ri	monster1	r
+15	me	ri	fa	me	monster2	l
+16	ko	ko	me	ri	monster3	r
+17	ri	fa	ri	me	monster1	l
+18	ri	ko	fa	ri	monster4	r

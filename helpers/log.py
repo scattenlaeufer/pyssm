@@ -52,7 +52,7 @@ class Log_Handler:
 			return (last[1],False)
 
 
-class Trail_Logger:
+class Trial_Logger:
 
 	def __init__(self,name):
 		self.name = os.path.join(__file__[:-7],'trail_log/',name)

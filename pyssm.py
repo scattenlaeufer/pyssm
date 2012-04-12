@@ -3,9 +3,9 @@
 import pygame, sys, time, random
 from helpers.log import Log_Handler
 from pygame.locals import *
-from level.stages import Stage_A, Stage_U, Stage_F, Stage_Q, Stage_P
+from level.stages import Stage_A, Stage_U, Stage_F, Stage_Q, Stage_P, Stage_Z, Stage_L, Stage_B
 
-print(u'ssm training version 0.1\nwirtten by Björn Guth')
+print(u'ssm training\nwirtten by Björn Guth')
 
 def cake():
 	print('\n            ,:/+/-\n            /M/\n       .:/= ;MH/,    ,=/+%$XH@MM#@:\n      -$##@+$###@H@MMM#######H:.    -/H#\n.,H@H@ X######@ -H#####@+-     -+H###@x\n    .,@##H;      +XM##M/,     =%@###@X;-\nX%-  :M##########$.    .:%M###@%:\nM##H,   +H@@@$/-.  ,;$M###@%,          -\nM###M=,,---,.-%%H####M$:           ,+@##\n@##################@/.          :%##@$-\nM################H,         ;HM##M$=\n##################.    .=$M##M$=\n#################H..;XM##M$=         .:+\nM####################@%=          =+@MH%\n@#################M/.         =+H#X%=\n=+M###############M,     -/X#X+;.\n  .;XM###########H=    ,/X#H+:,\n    .=+HM#######M+/+HM@+=.\n         ,:/%XM####H/.\n              ,.:=-.\n')
@@ -18,43 +18,71 @@ def end():
 	print('\n             .,-:;//;:=,\n          . :H@@@MM@M#H/.,+%;,\n       ,/X+ +M@@M@MM%=,-%HMMM@X/,\n     -+@MM; $M@@MH+-,;XMMMM@MMMM@+-$\n    ;@M@@M- XM@X;. -+XXXXXHHH@M@M#@/.\n  ,%MM@@MH ,@%=             .---=-=:=,.\n  =@#@@@MX.,                -%HX$$%%%:;\n =-./@M@M$                   .;@MMMM@MM:\n X@/ -$MM/                    . +MM@@@M$\n,@M@H: :@:                    . =X#@@@@-\n,@@@MMX, .                    /H- ;@M@M=\n.H@@@@M@+,                    %MM+..%#$.\n /MMMM@MMH/.                  XM@MH; =;\n  /%+%$XHH@$=              , .H@@@@MX,\n  .=--------.           -%H.,@@@@@MX,\n  .%MM@@@HHHXX$$$%+- .:$MMX =M@@MM%.\n    =XMMM@MM@MM#H;,-+HMM@M+ /MMMX=\n      =%@M@M#@$-.=$@MM@@@M; %M%=\n        ,:+$+-,/H#MMMMMMM@= =,\n              =++%%%%+/:-.')
 	print('\nSorry, but the cake was a lie.')
 
-def normal(teach,test,rep):
+def normal(teach,test,rep,neo):
 	result = log.analyze()
 	if result[0] == '0':
 		cake()
-		stage = Stage_A(log,teach,test,rep)
+		stage = Stage_A(log,teach,test,rep,neo)
 	elif result[0] == 'A':
 		if result[1]:
 			cake()
-			stage = Stage_A(log,teach,test,True)
+			stage = Stage_A(log,teach,test,True,neo)
 		else:
 			cake()
-			stage = Stage_F(log,teach,test,rep)
+			stage = Stage_F(log,teach,test,rep,neo)
 	elif result[0] == 'F':
 		if result[1]:
 			cake()
-			stage = Stage_F(log,teach,test,True)
+			stage = Stage_F(log,teach,test,True,neo)
 		else:
 			cake()
-			stage = Stage_U(log,teach,test,rep)
+			stage = Stage_U(log,teach,test,rep,neo)
 	elif result[0] == 'U':
 		if result[1]:
 			cake()
-			stage = Stage_U(log,teach,test,True)
+			stage = Stage_U(log,teach,test,True,neo)
 		else:
 			cake()
-			stage = Stage_Q(log,teach,test,rep)
+			stage = Stage_P(log,teach,test,rep,neo)
+	elif result[0] == 'P':
+		if result[1]:
+			cake()
+			stage = Stage_P(log,teach,test,True,neo)
+		else:
+			cake()
+			stage = Stage_L(log,teach,test,rep,neo)
+	elif result[0] == 'L':
+		if result[1]:
+			cake()
+			stage = Stage_L(log,teach,test,True,neo)
+		else:
+			cake()
+			stage = Stage_Q(log,teach,test,rep,neo)
 	elif result[0] == 'Q':
 		if result[1]:
 			cake()
-			stage = Stage_Q(log,teach,test,True)
+			stage = Stage_Q(log,teach,test,True,neo)
+		else:
+			cake()
+			stage = Stage_B(log,teach,test,rep,neo)
+	elif result[0] == 'B':
+		if result[1]:
+			cake()
+			stage = Stage_L(log,teach,test,True,neo)
+		else:
+			cake()
+			stage = Stage_Z(log,teach,test,rep,neo)
+	elif result[0] == 'Z':
+		if result[1]:
+			cake()
+			stage = Stage_Z(log,teach,test,True,neo)
 		else:
 			end()
 
 log = Log_Handler()
 
 if len(sys.argv) == 1:
-	normal(False,False,False)
+	normal(False,False,False,False)
 else:
 	if '--help' in sys.argv:
 		print('\nHelp\n\nfollowing flags accepted:')
@@ -62,6 +90,7 @@ else:
 		print('\t--test\t\tskips all instructions and the teaching part')
 		print('\t--teach\t\tskips all instructions and the testing part')
 		print('\t--rep\t\tstarts the repetition of a stage')
+		print('\t--neo\t\tset keybort layout to neo')
 		print('\t--log\t\tprints log file')
 		print('\t--log-only\tprint log file and exit')
 		sys.exit()
@@ -73,6 +102,7 @@ else:
 	test = False
 	teach = False
 	rep = False
+	neo = False
 	if '--test' in sys.argv:
 		test = True
 
@@ -82,20 +112,28 @@ else:
 	if '--rep' in sys.argv:
 		rep = True
 
+	if '--neo' in sys.argv:
+		neo = True
 	if '-s' in sys.argv:
 		start = sys.argv[sys.argv.index('-s')+1]
 		if start == 'a':
-			stage = Stage_A(log,teach,test,rep)
+			stage = Stage_A(log,teach,test,rep,neo)
 		elif start == 'u':
-			stage = Stage_U(log,teach,test,rep)
+			stage = Stage_U(log,teach,test,rep,neo)
 		elif start == 'f':
-			stage = Stage_F(log,teach,test,rep)
+			stage = Stage_F(log,teach,test,rep,neo)
 		elif start == 'q':
-			stage = Stage_Q(log,teach,test,rep)
+			stage = Stage_Q(log,teach,test,rep,neo)
 		elif start == 'p':
-			stage = Stage_P(log,teach,test,rep)
+			stage = Stage_P(log,teach,test,rep,neo)
+		elif start == 'z':
+			stage = Stage_Z(log,teach,test,rep,neo)
+		elif start == 'l':
+			stage = Stage_L(log,teach,test,rep,neo)
+		elif start == 'b':
+			stage = Stage_B(log,teach,test,rep,neo)
 	else:
-		normal(teach,test)
+		normal(teach,test,rep,neo)
 	
 	if '--log' in sys.argv:
 		print(log)

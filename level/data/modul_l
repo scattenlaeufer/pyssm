@@ -1,16 +1,17 @@
-1	pa.wav	anteater.gif	bu_left_trans.gif	pa_cent_trans.gif	lo_right_trans.gif	104	false	true	false	papos1.wav	paneg1.wav
-2	ma.wav	armadillo.gif	ma_left_trans.gif	ti_cent_trans.gif	ke_right_trans.gif	97	true	false	false	mapos1.wav	maneg2.wav
-3	pa.wav	bear.gif	lo_left_trans.gif	bu_cent_trans.gif	pa_right_trans.gif	39	false	false	true	papos2.wav	paneg1.wav
-4	ke.wav	bird.gif	ma_left_trans.gif	ke_cent_trans.gif	ti_right_trans.gif	104	false	true	false	kepos1.wav	keneg2.wav
-5	ti.wav	turtle.gif	ti_left_trans.gif	pa_cent_trans.gif	ke_right_trans.gif	97	true	false	false	tipos2.wav	tineg1.wav
-6	lo.wav	hedgehog.gif	bu_left_trans.gif	ma_cent_trans.gif	lo_right_trans.gif	39	false	false	true	lopos1.wav	loneg2.wav
-7	pa.wav	anteater.gif	ke_left_trans.gif	pa_cent_trans.gif	bu_right_trans.gif	104	false	true	false	papos4.wav	paneg2.wav
-8	ti.wav	armadillo.gif	lo_left_trans.gif	ti_cent_trans.gif	pa_right_trans.gif	104	false	true	false	tipos1.wav	tineg1.wav
-9	bu.wav	bear.gif	ti_left_trans.gif	ma_cent_trans.gif	bu_right_trans.gif	39	false	false	true	bupos2.wav	buneg2.wav
-10	pa.wav	bird.gif	pa_left_trans.gif	ke_cent_trans.gif	lo_right_trans.gif	97	true	false	false	papos3.wav	paneg1.wav
-11	lo.wav	turtle.gif	bu_left_trans.gif	lo_cent_trans.gif	pa_right_trans.gif	104	false	true	false	lopos2.wav	loneg2.wav
-12	ma.wav	hedgehog.gif	ti_left_trans.gif	ke_cent_trans.gif	ma_right_trans.gif	39	false	false	true	mapos2.wav	maneg1.wav
-13	bu.wav	anteater.gif	lo_left_trans.gif	pa_cent_trans.gif	bu_right_trans.gif	39	false	false	true	bupos1.wav	buneg2.wav
-14	ke.wav	armadillo.gif	ke_left_trans.gif	ma_cent_trans.gif	lo_right_trans.gif	97	true	false	false	kepos2.wav	keneg1.wav
-15	ti.wav	bear.gif	ma_left_trans.gif	bu_cent_trans.gif	ti_right_trans.gif	39	false	false	true	tipos3.wav	tineg2.wav
-16	pa.wav	bird.gif	pa_left_trans.gif	lo_cent_trans.gif	ke_right_trans.gif	97	true	false	false	papos4.wav	paneg2.wav
+1	a	a	o	i	dog	l
+2	a	i	a	o	seagull	r
+3	i	o	a	i	seal	l
+4	i	i	o	a	dog	r
+5	o	a	o	i	seagull	l
+6	o	i	a	o	seal	r
+7	o	o	i	a	dog	l
+8	o	a	o	i	seagull	r
+9	o	a	i	o	seal	l
+10	me	me	ri	ko	dog	r
+11	me	ko	me	ri	seagull	l
+12	ko	ri	me	ko	seal	r
+13	ko	ko	ri	me	dog	l
+14	ri	ko	ri	me	seagull	r
+15	ri	me	ko	ri	seal	l
+16	ri	ri	ko	me	dog	r
+17	ri	me	ri	ko	seagull	l

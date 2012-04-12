@@ -2,9 +2,8 @@
 
 import pygame, sys, random, time, os
 from pygame.locals import *
-from engines import OneOutOfTwo, Space_Engine, Balloon_Engine, CatchMeIfYouCan
-from helpers.log import Log_Handler
-from helpers.log import Trail_Logger
+from engines import OneOutOfTwo, Space_Engine, Balloon_Engine, CatchMeIfYouCan, OneOutOfThree
+from helpers.log import Log_Handler, Trial_Logger
 from helpers import Stop_Watch
 
 
@@ -12,7 +11,7 @@ from helpers import Stop_Watch
 
 class Stage:
 
-	def __init__(self,bla=True):
+	def __init__(self,bla=True,neo=False):
 		
 		self.path = __file__[:-10]
 		self.miss = 0
@@ -36,6 +35,13 @@ class Stage:
 		self.bg_blank = (194,194,194)
 		self.surface.fill(self.bg_blank)
 		self.font1 = pygame.font.Font(None,70)
+
+		if neo:
+			self.left = u'xvlcwuiaeoüöäpzXVLCWUIAEOÜÖÄPZ'
+			self.right = u'khgfqßsnrtdybm,.jKHGFQẞSNRTDYBM–•J'
+		else:
+			self.left = u'qwertasdfgyxcvbQWERTASDFGYXCVB'
+			self.right = u'zuiopühjklöänmm,.-ZUIOPÜHJKLÖÄNM'
 		if bla:
 			self.text = self.font1.render('Willkommen zum Silbenlernspiel',True,(0,0,0))
 			self.surface.blit(self.text,(self.position_center_width(self.text),100))
@@ -205,9 +211,9 @@ class Stage:
 			if event.key == K_ESCAPE:
 				pygame.quit()
 				sys.exit()
-			if event.key == ord('f'):
+			if event.key == K_F10:
 				self.toggle_fullsreen()
-			if event.key == ord('q') and pygame.mixer.music.get_busy():
+			if event.key == K_F12 and pygame.mixer.music.get_busy():
 				pygame.mixer.music.stop()
 
 
@@ -239,23 +245,40 @@ class Stage:
 		return int(width * ratio)
 
 
-	def test_syllable(self,syllable,dic,n=8):
+	def test_syllable(self,syllable,dic,letter=False,n=8):
 
 		miss = 0
 		sw = Stop_Watch()
-		log = Trail_Logger('test_'+syllable)
-		log.set_top('trail_nr\tkey_pressed\tresponse\tresponse_time')
+		log = Trial_Logger('test_'+syllable)
+		log.set_top('trial_nr\tkey_pressed\tresponse\tresponse_time')
 		m = 1
+		side = []
 
 		for i in range(n):
 			self.surface.fill(self.bg_blank)
-			correct = random.randint(1,2)
+			a = True
+			while a:
+				correct = random.randint(1,2)
+				if len(side) == 0:
+					side.append(correct)
+					a = False
+				elif side[len(side)-1] == correct:
+					if len(side) < 2:
+						side.append(correct)
+						a = False
+				else:
+					side = [correct]
+					a = False
+						
 
 			image = pygame.image.load(os.path.join(self.path,'images/syllables/'+syllable.upper()+'.gif'))
 			dimension = (self.windowwidth/3,self.transform_height(image,self.windowwidth/3))
 			image = pygame.transform.scale(image,dimension)
 
-			distr = pygame.image.load(os.path.join(self.path,'images/distr/DISTR'+str(random.randint(1,10))+'.gif'))
+			if letter:
+				distr = pygame.image.load(os.path.join(self.path,'images/distr/DISTR'+str(random.randint(11,20))+'.gif'))
+			else:
+				distr = pygame.image.load(os.path.join(self.path,'images/distr/DISTR'+str(random.randint(1,10))+'.gif'))
 			distr = pygame.transform.scale(distr,dimension)
 			
 			if correct == 1:
@@ -277,16 +300,17 @@ class Stage:
 					self.standart_event(event)
 
 					if event.type == KEYDOWN:
-						if event.key == ord('u'):
-							sw.stop()
-							press = 1
-							key_pressed = True
-						if event.key == ord('d'):
-							sw.stop()
-							press = 2
-							key_pressed = True
-						if event.key == K_F1:
-							self.play_instruction(self.instr,False)
+						try:
+							if self.left.find(unichr(event.key)) >= 0:
+								sw.stop()
+								press = 1
+								key_pressed = True
+							if self.right.find(unichr(event.key)) >= 0:
+								sw.stop()
+								press = 2
+								key_pressed = True
+						except UnicodeDecodeError:
+							print(event.key)
 
 				if press == correct and key_pressed:
 					log.add([m,press,int(press==correct),sw.get_time()])
@@ -333,15 +357,29 @@ class Stage:
 		return miss
 
 
+	def feedback(self,miss,x,outstanding=True):
+		
+		pygame.time.wait(1000)
+		if miss == 0 and outstanding:
+			self.draw(pygame.image.load(os.path.join(self.path,'images/feedback/feedback3.gif')))
+			self.play_instruction('audio/feedback/feedback3.ogg',False)
+		elif miss <= x:
+			self.draw(pygame.image.load(os.path.join(self.path,'images/feedback/feedback2.gif')))
+			self.play_instruction('audio/feedback/feedback2.ogg',False)
+		else:
+			self.draw(pygame.image.load(os.path.join(self.path,'images/feedback/feedback1.gif')))
+			self.play_instruction('audio/feedback/feedback1.ogg',False)
+		pygame.time.wait(1000)
+
 
 class Stage_A(Stage):
 
-	def __init__(self,log,teach=False,test=False,rep=False):
+	def __init__(self,log,teach=False,test=False,rep=False,neo=False):
 	   
 		if teach or test:
-			Stage.__init__(self,False)
+			Stage.__init__(self,False,neo)
 		else:
-			Stage.__init__(self,True)
+			Stage.__init__(self,True,neo)
 
 		#load sounds
 		if not (teach and test):
@@ -354,7 +392,7 @@ class Stage_A(Stage):
 				self.start('Modul A','audio/instr/instr1.ogg')
 
 				#teach and test LO
-				self.teach_syllable('images/syllables/KO.gif',self.load_sound(os.path.join(self.path,'audio/pres/preslo.ogg')))
+				self.teach_syllable('images/syllables/KO.gif',self.load_sound(os.path.join(self.path,'audio/pres/presko.ogg')))
 				self.play_instruction('audio/instr/instr2.ogg')
 				self.teach_syllable('images/syllables/KO.gif',self.lo['1'])
 				
@@ -362,10 +400,10 @@ class Stage_A(Stage):
 
 			if not test:
 				miss = 0
-				miss = self.test_syllable('ko',self.lo,8)
+				miss = self.test_syllable('ko',self.lo)
 				if miss > 2 and not teach:
 					miss = 0
-					miss = self.test_syllable('ko',self.lo,8)
+					miss = self.test_syllable('ko',self.lo)
 					repitition += 1
 					if miss > 2:
 						log.add('A',0,-1)
@@ -376,7 +414,7 @@ class Stage_A(Stage):
 				#teach and test MA
 				self.play_instruction('audio/instr/instr4.ogg')
 
-				self.teach_syllable('images/syllables/ME.gif',self.load_sound(os.path.join(self.path,'audio/pres/presma.ogg')))
+				self.teach_syllable('images/syllables/ME.gif',self.load_sound(os.path.join(self.path,'audio/pres/presme.ogg')))
 				self.play_instruction('audio/instr/instr2.ogg')
 				self.teach_syllable('images/syllables/ME.gif',self.ma['1'])
 
@@ -384,11 +422,11 @@ class Stage_A(Stage):
 
 			if not test:
 				miss = 0
-				miss = self.test_syllable('me',self.ma,8)
+				miss = self.test_syllable('me',self.ma)
 				if miss > 2 and not teach:
 					miss = 0
 					repitition += 1
-					miss = self.test_syllable('me',self.ma,8)
+					miss = self.test_syllable('me',self.ma)
 					if miss > 2:
 
 						log.add('A',0,-1)
@@ -406,15 +444,15 @@ class Stage_A(Stage):
 		else:
 			res_teach = -1
 			self.start('Modul R','audio/instr/instr7.ogg')
-			self.teach_syllable('images/syllables/KO.gif',self.load_sound(os.path.join(self.path,'audio/pres/preslo.ogg')))
-			self.teach_syllable('images/syllables/ME.gif',self.load_sound(os.path.join(self.path,'audio/pres/presma.ogg')))
+			self.teach_syllable('images/syllables/KO.gif',self.load_sound(os.path.join(self.path,'audio/pres/presko.ogg')))
+			self.teach_syllable('images/syllables/ME.gif',self.load_sound(os.path.join(self.path,'audio/pres/presme.ogg')))
 
 		if not (teach or test):
 			image = pygame.image.load(os.path.join(self.path,'images/bg/bg_smiley.jpg'))
 			self.draw(image)
 			self.play_instruction('audio/instr/instr5.ogg',False)
 
-			image = pygame.image.load(os.path.join(self.path,'images/bg/bg_landscape.jpg'))
+			image = pygame.image.load(os.path.join(self.path,'images/bg/bg_landscape_2.jpg'))
 			self.draw(image)
 			self.play_instruction('audio/instr/instr6.ogg',False)
 
@@ -447,15 +485,17 @@ class Stage_A(Stage):
 
 			bg_stage = pygame.image.load(os.path.join(self.path,'images/bg/bg_landscape_2.jpg'))
 
-			log_a = Trail_Logger('test_a')
-			stage = OneOutOfTwo(log_a,self.surface,bg_stage,sprites,syllables,syllable_images,syllable_sound,random_order=False,order=os.path.join(self.path,'data/modul_a'))
+			log_a = Trial_Logger('test_a')
+			stage = OneOutOfTwo(log_a,self.surface,bg_stage,sprites,syllables,syllable_images,syllable_sound,random_order=False,order=os.path.join(self.path,'data/modul_a'),neo=neo)
 
 			miss = 0
 			miss = stage.start(12)
+			outstanding = True
 			if miss > 2:
 				if repitition == 0:
 					miss = 0
 					miss = stage.start(12)
+					outstanding = False
 					if miss > 2:
 						log.add('A',res_teach,0)
 						log.save()
@@ -479,6 +519,7 @@ class Stage_A(Stage):
 		log.save()
 
 		if not (teach or test):
+			self.feedback(miss,1,outstanding)
 			image = pygame.image.load(os.path.join(self.path,'images/bg/bg_wave.jpg'))
 			self.draw(image)
 			self.play_instruction('audio/final/final1.ogg',False)
@@ -490,12 +531,12 @@ class Stage_A(Stage):
 
 class Stage_U(Stage):
 
-	def __init__(self,log,teach=False,test=False,rep=False):
+	def __init__(self,log,teach=False,test=False,rep=False,neo=False):
 	   
 		if teach or test:
-			Stage.__init__(self,False)
+			Stage.__init__(self,False,neo)
 		else:
-			Stage.__init__(self,True)
+			Stage.__init__(self,True,neo)
 
 		if not (teach and test):
 			a = self.load_syllable_sound('a')
@@ -503,17 +544,16 @@ class Stage_U(Stage):
 			ko = self.load_syllable_sound('ko')
 			me = self.load_syllable_sound('me')
 
-	# TODO change instruction to instr7 with syllables and letters
 		if not (teach or test):
 			if rep:
-				self.start('Modul C','audio/instr/instr9b.ogg')
+				self.start('Modul C','audio/instr/instr7c.ogg')
 			else:
-				self.start('Modul U',self.get_path('audio/instr/instr9.ogg'))
+				self.start('Modul U',self.get_path('audio/instr/instr7c.ogg'))
 			res_teach = -1
-			self.teach_syllable('images/syllables/A.gif',self.load_sound(os.path.join(self.path,'audio/pres/preslo.ogg')))
-			self.teach_syllable('images/syllables/I.gif',self.load_sound(os.path.join(self.path,'audio/pres/presma.ogg')))
-			self.teach_syllable('images/syllables/KO.gif',self.load_sound(os.path.join(self.path,'audio/pres/preske.ogg')))
-			self.teach_syllable('images/syllables/ME.gif',self.load_sound(os.path.join(self.path,'audio/pres/presbu.ogg')))
+			self.teach_syllable('images/syllables/A.gif',self.load_sound(os.path.join(self.path,'audio/pres/presa.ogg')))
+			self.teach_syllable('images/syllables/I.gif',self.load_sound(os.path.join(self.path,'audio/pres/presi.ogg')))
+			self.teach_syllable('images/syllables/KO.gif',self.load_sound(os.path.join(self.path,'audio/pres/presko.ogg')))
+			self.teach_syllable('images/syllables/ME.gif',self.load_sound(os.path.join(self.path,'audio/pres/presme.ogg')))
 
 		res_teach = -1
 
@@ -565,13 +605,15 @@ class Stage_U(Stage):
 
 			bg_stage = pygame.image.load(os.path.join(self.path,'images/bg/bg_underwater.gif'))
 			
-			log_u = Trail_Logger('test_u')
-			stage = OneOutOfTwo(log_u,self.surface,bg_stage,sprites,syllables,syllable_images,syllable_sound,random_order=False,order=os.path.join(self.path,'data/modul_u'))
+			log_u = Trial_Logger('test_u')
+			stage = OneOutOfTwo(log_u,self.surface,bg_stage,sprites,syllables,syllable_images,syllable_sound,random_order=False,order=os.path.join(self.path,'data/modul_u'),neo=neo)
 			miss = 0
 			miss = stage.start(15)
+			outstanding = True
 			if miss > 4 and not test:
 				miss = 0
 				miss = stage.start(15)
+				outstanding = False
 				if miss > 4:
 					log_u.save()
 					if rep:
@@ -591,6 +633,7 @@ class Stage_U(Stage):
 		log.save()
 		
 		if not (teach or test):
+			self.feedback(miss,2,outstanding)
 			image = pygame.image.load(os.path.join(self.path,'images/bg/bg_wave.jpg'))
 			self.draw(image)
 			self.play_instruction('audio/final/final1.ogg',False)
@@ -598,12 +641,12 @@ class Stage_U(Stage):
 
 class Stage_F(Stage):
 
-	def __init__(self,log,teach=False,test=False,rep=False):
+	def __init__(self,log,teach=False,test=False,rep=False,neo=False):
 		
 		if teach or test:
-			Stage.__init__(self,False)
+			Stage.__init__(self,False,neo)
 		else:
-			Stage.__init__(self,True)
+			Stage.__init__(self,True,neo)
 
 		if not (teach and test):
 			a = self.load_syllable_sound('a')
@@ -612,20 +655,19 @@ class Stage_F(Stage):
 
 		if not rep:
 			if not (teach or test):
-				self.start('Modul F','audio/instr/instr9b.ogg')
+				self.start('Modul F','audio/instr/instr9c.ogg')
 
-				self.teach_syllable(self.get_path('images/syllables/A.gif'),self.load_sound(self.get_path('audio/pres/preske.ogg')))
-				self.play_instruction(self.get_path('audio/instr/instr2.ogg'))
+				self.teach_syllable(self.get_path('images/syllables/A.gif'),self.load_sound(self.get_path('audio/pres/presa.ogg')))
+				self.play_instruction(self.get_path('audio/instr/instr2b.ogg'))
 				self.teach_syllable(self.get_path('images/syllables/A.gif'),a['1'])
-				self.play_instruction('audio/instr/instr3.ogg')
+				self.play_instruction('audio/instr/instr3b.ogg')
 
 			if not test:
 				miss = 0
-				miss = self.test_syllable('a',a,8)
+				miss = self.test_syllable('a',a,True)
 				if miss > 2 and not teach:
 					miss = 0
-					self.play_instruction('audio/instr/instr3.ogg')
-					miss = self.test_syllable('a',a,8)
+					miss = self.test_syllable('a',a,True)
 					if miss > 2:
 						log.add('F',0,-1)
 						log.save()
@@ -635,20 +677,19 @@ class Stage_F(Stage):
 				res_teach = -1
 
 			if not (teach or test):
-				self.play_instruction('audio/instr/instr4.ogg')
+				self.play_instruction('audio/instr/instr4b.ogg')
 
-				self.teach_syllable(self.get_path('images/syllables/I.gif'),self.load_sound(self.get_path('audio/pres/preske.ogg')))
-				self.play_instruction(self.get_path('audio/instr/instr2.ogg'))
+				self.teach_syllable(self.get_path('images/syllables/I.gif'),self.load_sound(self.get_path('audio/pres/presi.ogg')))
+				self.play_instruction(self.get_path('audio/instr/instr2b.ogg'))
 				self.teach_syllable(self.get_path('images/syllables/I.gif'),i['1'])
-				self.play_instruction('audio/instr/instr3.ogg')
+				self.play_instruction('audio/instr/instr3b.ogg')
 
 			if not test:
 				miss = 0
-				miss = self.test_syllable('i',i,8)
+				miss = self.test_syllable('i',i,True)
 				if miss > 2 and not teach:
 					miss = 0
-					self.play_instruction('audio/instr/instr3.ogg')
-					miss = self.test_syllable('i',i,8)
+					miss = self.test_syllable('i',i,True)
 					if miss > 2:
 						log.add('F',0,-1)
 						log.save()
@@ -665,8 +706,8 @@ class Stage_F(Stage):
 			res_teach = -1
 			self.start('Modul S',self.get_path('audio/instr/instr7b.ogg'))
 			miss_teach = -1
-			self.teach_syllable(self.get_path('images/syllables/A.gif'),self.load_sound(self.get_path('audio/pres/preslo.ogg')))
-			self.teach_syllable(self.get_path('images/syllables/I.gif'),self.load_sound(self.get_path('audio/pres/presma.ogg')))
+			self.teach_syllable(self.get_path('images/syllables/A.gif'),self.load_sound(self.get_path('audio/pres/presa.ogg')))
+			self.teach_syllable(self.get_path('images/syllables/I.gif'),self.load_sound(self.get_path('audio/pres/presi.ogg')))
 
 		if not teach:
 			syllables = {'a':6, 'i':6}
@@ -682,14 +723,16 @@ class Stage_F(Stage):
 
 		if not (teach or test):
 			self.draw(bg_stage)
-			self.play_instruction('audio/instr/instr10.ogg',False)
+			self.play_instruction('audio/instr/instr10b.ogg',False)
 
 		if not teach:
-			log_f = Trail_Logger('test_f')
-			stage = Space_Engine(log_f,self.surface,bg_stage,syllables,syllable_sound,sprites,self.get_path('data/modul_f'))
+			log_f = Trial_Logger('test_f')
+			stage = Space_Engine(log_f,self.surface,bg_stage,syllables,syllable_sound,sprites,self.get_path('data/modul_f'),neo=neo)
 			miss = stage.start()
+			outstanding = True
 			if miss > 2 and not test:
 				miss = stage.start()
+				outstanding = False
 				if miss > 2:
 					log_f.save()
 					if rep:
@@ -709,6 +752,7 @@ class Stage_F(Stage):
 		log.save()
 
 		if not (teach or test):
+			self.feedback(miss,1,outstanding)
 			image = pygame.image.load(os.path.join(self.path,'images/bg/bg_wave.jpg'))
 			self.draw(image)
 			self.play_instruction('audio/final/final1.ogg',False)
@@ -716,14 +760,14 @@ class Stage_F(Stage):
 
 class Stage_Q(Stage):
 	
-	def __init__(self,log,teach=False,test=False,repeat=False):
+	def __init__(self,log,teach=False,test=False,repeat=False,neo=False):
 
 		if teach or test:
 			#super(Stage_Q,self).__init__(self,False)
-			Stage.__init__(self,False)
+			Stage.__init__(self,False,neo)
 		else:
 			#super(Stage_Q,self).__init__(self,True)
-			Stage.__init__(self,True)
+			Stage.__init__(self,True,neo)
 		
 		a = self.load_syllable_sound('a')
 		i = self.load_syllable_sound('i')
@@ -737,15 +781,15 @@ class Stage_Q(Stage):
 			if not (teach or test):
 				self.start('Modul Q','audio/instr/instr9.ogg')
 
-				self.teach_syllable(self.get_path('images/syllables/FA.gif'),self.load_sound(self.get_path('audio/pres/presti.ogg')))
+				self.teach_syllable(self.get_path('images/syllables/FA.gif'),self.load_sound(self.get_path('audio/pres/presfa.ogg')))
 				self.play_instruction(self.get_path('audio/instr/instr2.ogg'))
 				self.teach_syllable(self.get_path('images/syllables/FA.gif'),fa['1'])
 				self.play_instruction('audio/instr/instr3.ogg')
 
 			if not test:
-				miss = self.test_syllable('fa',fa,8)
+				miss = self.test_syllable('fa',fa)
 				if miss > 2 and not teach:
-					miss = self.test_syllable('fa',fa,8)
+					miss = self.test_syllable('fa',fa)
 					if miss > 2:
 						log.add('Q',0,-1)
 						los.save()
@@ -755,25 +799,25 @@ class Stage_Q(Stage):
 				res_teach = -1
 
 			if not (teach or test):
-				self.play_instruction('audio/misc/repeat.ogg')
-				self.teach_syllable(self.get_path('images/syllables/A.gif'),self.load_sound(self.get_path('audio/pres/preslo.ogg')))
-				self.teach_syllable(self.get_path('images/syllables/I.gif'),self.load_sound(self.get_path('audio/pres/presma.ogg')))
-				self.teach_syllable(self.get_path('images/syllables/O.gif'),self.load_sound(self.get_path('audio/pres/preske.ogg')))
-				self.teach_syllable(self.get_path('images/syllables/ME.gif'),self.load_sound(self.get_path('audio/pres/presbu.ogg')))
-				self.teach_syllable(self.get_path('images/syllables/KO.gif'),self.load_sound(self.get_path('audio/pres/presbu.ogg')))
-				self.teach_syllable(self.get_path('images/syllables/RI.gif'),self.load_sound(self.get_path('audio/pres/presbu.ogg')))
+				self.play_instruction('audio/misc/repeat_b.ogg')
+				self.teach_syllable(self.get_path('images/syllables/A.gif'),self.load_sound(self.get_path('audio/pres/presa.ogg')))
+				self.teach_syllable(self.get_path('images/syllables/I.gif'),self.load_sound(self.get_path('audio/pres/presi.ogg')))
+				self.teach_syllable(self.get_path('images/syllables/O.gif'),self.load_sound(self.get_path('audio/pres/preso.ogg')))
+				self.teach_syllable(self.get_path('images/syllables/ME.gif'),self.load_sound(self.get_path('audio/pres/presme.ogg')))
+				self.teach_syllable(self.get_path('images/syllables/KO.gif'),self.load_sound(self.get_path('audio/pres/presko.ogg')))
+				self.teach_syllable(self.get_path('images/syllables/RI.gif'),self.load_sound(self.get_path('audio/pres/presri.ogg')))
 
 		else:
-			self.start('Modul K',self.get_path('audio/instr/instr7.ogg'))
+			self.start('Modul K',self.get_path('audio/instr/instr7c.ogg'))
 			res_teach = -1
 			miss_teach = -1
-			self.teach_syllable(self.get_path('images/syllables/A.gif'),self.load_sound(self.get_path('audio/pres/preslo.ogg')))
-			self.teach_syllable(self.get_path('images/syllables/I.gif'),self.load_sound(self.get_path('audio/pres/presma.ogg')))
-			self.teach_syllable(self.get_path('images/syllables/O.gif'),self.load_sound(self.get_path('audio/pres/preske.ogg')))
-			self.teach_syllable(self.get_path('images/syllables/ME.gif'),self.load_sound(self.get_path('audio/pres/presbu.ogg')))
-			self.teach_syllable(self.get_path('images/syllables/KO.gif'),self.load_sound(self.get_path('audio/pres/presbu.ogg')))
-			self.teach_syllable(self.get_path('images/syllables/RI.gif'),self.load_sound(self.get_path('audio/pres/presbu.ogg')))
-			self.teach_syllable(self.get_path('images/syllables/FA.gif'),self.load_sound(self.get_path('audio/pres/presti.ogg')))
+			self.teach_syllable(self.get_path('images/syllables/A.gif'),self.load_sound(self.get_path('audio/pres/presa.ogg')))
+			self.teach_syllable(self.get_path('images/syllables/I.gif'),self.load_sound(self.get_path('audio/pres/presi.ogg')))
+			self.teach_syllable(self.get_path('images/syllables/O.gif'),self.load_sound(self.get_path('audio/pres/preso.ogg')))
+			self.teach_syllable(self.get_path('images/syllables/ME.gif'),self.load_sound(self.get_path('audio/pres/presme.ogg')))
+			self.teach_syllable(self.get_path('images/syllables/KO.gif'),self.load_sound(self.get_path('audio/pres/presko.ogg')))
+			self.teach_syllable(self.get_path('images/syllables/RI.gif'),self.load_sound(self.get_path('audio/pres/presri.ogg')))
+			self.teach_syllable(self.get_path('images/syllables/FA.gif'),self.load_sound(self.get_path('audio/pres/presfa.ogg')))
 
 
 		if not teach:
@@ -804,11 +848,13 @@ class Stage_Q(Stage):
 			self.play_instruction('audio/instr/instr12b.ogg',False)
 
 		if not teach:
-			log_q = Trail_Logger('test_q')
-			stage = Balloon_Engine(log_q,self.surface,bg_stage,syllables,syllable_sound,sprites,self.get_path('data/modul_q'))
+			log_q = Trial_Logger('test_q')
+			stage = Balloon_Engine(log_q,self.surface,bg_stage,syllables,syllable_sound,sprites,self.get_path('data/modul_q'),neo=neo)
 			miss = stage.start()
+			outstanding = True
 			if miss > 4:
 				miss = stage.start()
+				outstanding = False
 				if miss > 4:
 					log.add('Q',res_teach,0)
 					log.save()
@@ -826,6 +872,7 @@ class Stage_Q(Stage):
 		log.save()
 
 		if not (teach or test):
+			self.feedback(miss,2,outstanding)
 			self.draw(pygame.image.load(os.path.join(self.path,'images/bg/bg_wave.jpg')))
 			self.play_instruction('audio/final/final1.ogg',False)
 
@@ -841,12 +888,12 @@ class Stage_Q(Stage):
 
 class Stage_P(Stage):
 
-	def __init__(self, log, teach=False, test=False, rep=False):
+	def __init__(self, log, teach=False, test=False, rep=False, neo=False):
 		
 		if teach or test:
-			Stage.__init__(self,False)
+			Stage.__init__(self,False,neo)
 		else:
-			Stage.__init__(self,True)
+			Stage.__init__(self,True,neo)
 
 		if not (teach and test):
 			a = self.load_syllable_sound('a')
@@ -858,15 +905,15 @@ class Stage_P(Stage):
 		if not rep:
 			if not (teach or test):
 				self.start('Modul P','audio/instr/instr9.ogg')
-				self.teach_syllable('images/syllables/RI.gif',self.load_sound(os.path.join(self.path,'audio/pres/preslo.ogg')))
+				self.teach_syllable('images/syllables/RI.gif',self.load_sound(os.path.join(self.path,'audio/pres/presri.ogg')))
 				self.play_instruction('audio/instr/instr2.ogg')
 				self.teach_syllable('images/syllables/RI.gif',ri['1'])
 				self.play_instruction('audio/instr/instr3.ogg')
 
 			if not test:
-				miss = self.test_syllable('ri',ri,8)
+				miss = self.test_syllable('ri',ri)
 				if miss > 2:
-					miss = self.test_syllable('ri',ri,8)
+					miss = self.test_syllable('ri',ri)
 					if miss > 2:
 						log.add('P',0,-1)
 						log.save()
@@ -880,15 +927,15 @@ class Stage_P(Stage):
 
 		else:
 
-			#TODO change instr7 to instruction for syllables and letters
-			self.start('Modul I','audio/instr/instr7.ogg')
-			self.teach_syllable('images/syllables/RI.gif',self.load_sound(os.path.join(self.path,'audio/pres/preslo.ogg')))
+			self.start('Modul I','audio/instr/instr7c.ogg')
+			res_teach = -1
+			self.teach_syllable('images/syllables/RI.gif',self.load_sound(os.path.join(self.path,'audio/pres/presri.ogg')))
 
 		if not (teach or test):
-			self.teach_syllable('images/syllables/A.gif',self.load_sound(os.path.join(self.path,'audio/pres/preslo.ogg')))
-			self.teach_syllable('images/syllables/I.gif',self.load_sound(os.path.join(self.path,'audio/pres/preslo.ogg')))
-			self.teach_syllable('images/syllables/ME.gif',self.load_sound(os.path.join(self.path,'audio/pres/preslo.ogg')))
-			self.teach_syllable('images/syllables/KO.gif',self.load_sound(os.path.join(self.path,'audio/pres/preslo.ogg')))
+			self.teach_syllable('images/syllables/A.gif',self.load_sound(os.path.join(self.path,'audio/pres/presa.ogg')))
+			self.teach_syllable('images/syllables/I.gif',self.load_sound(os.path.join(self.path,'audio/pres/presi.ogg')))
+			self.teach_syllable('images/syllables/ME.gif',self.load_sound(os.path.join(self.path,'audio/pres/presme.ogg')))
+			self.teach_syllable('images/syllables/KO.gif',self.load_sound(os.path.join(self.path,'audio/pres/presko.ogg')))
 
 			self.draw(pygame.image.load(os.path.join(self.path,'images/bg/bg_smiley.jpg')))
 			self.play_instruction('audio/instr/instr14.ogg',False)
@@ -929,16 +976,18 @@ class Stage_P(Stage):
 			sprites['ri']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_p/airplane_r_ri.gif'))
 
 			bg_stage = pygame.image.load(os.path.join(self.path,'images/bg/bg_airplanes.gif'))
-			log_p = Trail_Logger('test_p')
+			log_p = Trial_Logger('test_p')
 
-			stage = CatchMeIfYouCan(log_p,self.surface,bg_stage,syllable_sound,miss,sprites,order=os.path.join(self.path,'data/modul_p'))
+			stage = CatchMeIfYouCan(log_p,self.surface,bg_stage,syllable_sound,sprites,os.path.join(self.path,'data/modul_p'),neo=neo)
 
 			if not test:
 				stage.play_instruction(self.load_sound(os.path.join(self.path,'audio/instr/instr15.ogg')),self.load_sound(os.path.join(self.path,'audio/instr/instr16.ogg')),pygame.image.load(os.path.join(self.path,'images/stage_p/instr_image1.gif')))
 
 			miss = stage.start()
+			outstanding = True
 			if miss > 4:
 				miss = stage.start()
+				outstanding = False
 				if miss > 4:
 					log.add('P',res_teach,0)
 					log.save()
@@ -956,5 +1005,388 @@ class Stage_P(Stage):
 		log.save()
 
 		if not (teach or test):
+			self.feedback(miss,2,outstanding)
 			self.draw(pygame.image.load(os.path.join(self.path,'images/bg/bg_wave.jpg')))
-			self.play_instruciton('audio/final/final1.ogg',False)
+			self.play_instruction('audio/final/final1.ogg',False)
+
+
+
+class Stage_Z(Stage):
+
+	def __init__(self,log,teach=False,test=False,rep=False,neo=False):
+
+		if teach or test:
+			Stage.__init__(self,False,neo)
+		else:
+			Stage.__init__(self,True,neo)
+
+		if not (teach and test):
+			a = self.load_syllable_sound('a')
+			e = self.load_syllable_sound('e')
+			i = self.load_syllable_sound('i')
+			o = self.load_syllable_sound('o')
+			fa = self.load_syllable_sound('fa')
+			ko = self.load_syllable_sound('ko')
+			me = self.load_syllable_sound('me')
+			ri = self.load_syllable_sound('ri')
+
+		if not (teach or test):
+			if not rep:
+				self.start('Modul Z','audio/instr/instr7c.ogg')
+			else:
+				self.start('Modul Y','audio/instr/instr7c.ogg')
+
+			self.teach_syllable('images/syllables/A.gif',self.load_sound(os.path.join(self.path,'audio/pres/presa.ogg')))
+			self.teach_syllable('images/syllables/E.gif',self.load_sound(os.path.join(self.path,'audio/pres/prese.ogg')))
+			self.teach_syllable('images/syllables/I.gif',self.load_sound(os.path.join(self.path,'audio/pres/presi.ogg')))
+			self.teach_syllable('images/syllables/O.gif',self.load_sound(os.path.join(self.path,'audio/pres/preso.ogg')))
+			self.teach_syllable('images/syllables/FA.gif',self.load_sound(os.path.join(self.path,'audio/pres/presfa.ogg')))
+			self.teach_syllable('images/syllables/KO.gif',self.load_sound(os.path.join(self.path,'audio/pres/presko.ogg')))
+			self.teach_syllable('images/syllables/ME.gif',self.load_sound(os.path.join(self.path,'audio/pres/presme.ogg')))
+			self.teach_syllable('images/syllables/RI.gif',self.load_sound(os.path.join(self.path,'audio/pres/presri.ogg')))
+
+			self.draw(pygame.image.load(os.path.join(self.path,'images/bg/bg_smiley.jpg')))
+			self.play_instruction('audio/instr/instr18.ogg',False)
+		
+		if not teach:
+
+			syllable_sound = {}
+			sprites = {}
+
+			syllable_sound['a'] = a
+			syllable_sound['e'] = e
+			syllable_sound['i'] = i
+			syllable_sound['o'] = o
+			syllable_sound['fa'] = fa
+			syllable_sound['ko'] = ko
+			syllable_sound['me'] = me
+			syllable_sound['ri'] = ri
+
+			sprites['a'] = self.load_sprites('a')
+			sprites['e'] = self.load_sprites('e')
+			sprites['i'] = self.load_sprites('i')
+			sprites['o'] = self.load_sprites('o')
+			sprites['fa'] = self.load_sprites('fa')
+			sprites['ko'] = self.load_sprites('ko')
+			sprites['me'] = self.load_sprites('me')
+			sprites['ri'] = self.load_sprites('ri')
+
+			bg = pygame.image.load(os.path.join(self.path,'images/bg/bg_car.gif'))
+			log_z = Trial_Logger('test_z')
+
+			stage = CatchMeIfYouCan(log_z,self.surface,bg,syllable_sound,sprites,os.path.join(self.path,'data/modul_z'),neo=neo)
+			if not test:
+				stage.play_instruction(self.load_sound(os.path.join(self.path,'audio/instr/instr19.ogg')),self.load_sound(os.path.join(self.path,'audio/instr/instr20.ogg')),pygame.image.load(os.path.join(self.path,'images/stage_z/instr.gif')))
+			miss = stage.start()
+			outstanding = True
+			if miss > 5:
+				miss = stage.start()
+				outstanding = False
+				if miss > 5:
+					log.add('Z',-1,0)
+					log.save()
+					log_z.save()
+					if rep:
+						self.stop()
+					else:
+						self.end()
+			log_z.save()
+			res_test = 1
+		else:
+			res_test = -1
+
+		log.add('Z',-1,res_test)
+		log.save()
+
+		if not (teach or test):
+			self.feedback(miss,2,outstanding)
+			self.draw(pygame.image.load(os.path.join(self.path,'images/bg/bg_wave.jpg')))
+			self.play_instruction('audio/final/final2.ogg',False)
+
+	def load_sprites(self,syllable):
+
+		out = {}
+		out['ambulance'] = pygame.image.load(os.path.join(self.path,'images/stage_z/ambulance_'+syllable+'_trans.gif'))
+		out['blue'] = pygame.image.load(os.path.join(self.path,'images/stage_z/carblue_'+syllable+'_trans.gif'))
+		out['green'] = pygame.image.load(os.path.join(self.path,'images/stage_z/cargreen_'+syllable+'_trans.gif'))
+		out['red'] = pygame.image.load(os.path.join(self.path,'images/stage_z/carred_'+syllable+'_trans.gif'))
+
+		return out
+
+
+class Stage_L(Stage):
+
+	def __init__(self, log, teach=False, test=False, rep=False,neo=False):
+
+		if teach or test:
+			Stage.__init__(self,False,neo)
+		else:
+			Stage.__init__(self,True,neo)
+
+		if not (teach and test):
+			a = self.load_syllable_sound('a')
+			i = self.load_syllable_sound('i')
+			o = self.load_syllable_sound('o')
+			ko = self.load_syllable_sound('ko')
+			me = self.load_syllable_sound('me')
+			ri = self.load_syllable_sound('ri')
+
+		if not rep:
+			if not (teach or test):
+				self.start('Modul L',os.path.join(self.path,'audio/instr/instr9b.ogg'))
+				self.teach_syllable(os.path.join(self.path,'images/syllables/O.gif'),self.load_sound(os.path.join(self.path,'audio/pres/preso.ogg')))
+				self.play_instruction('audio/instr/instr2b.ogg')
+				self.teach_syllable(os.path.join(self.path,'images/syllables/O.gif'),o['1'])
+				self.play_instruction('audio/instr/instr3b.ogg')
+
+			if not test:
+				miss = self.test_syllable('o',o,True)
+				if miss > 2:
+					miss = self.test_syllble('o'.o,True)
+					if miss > 2:
+						log.add('L',0,-1)
+						log.save()
+						self.stop()
+				res_teach = 1
+			else:
+				res_teach = -1
+
+			if not (teach or test):
+				self.play_instruction('audio/misc/repeat.ogg')
+
+		else:
+			self.start('Modul M',os.path.join(self.path,'audio/instr/instr7c.ogg'))
+			res_teach = -1
+			self.teach_syllable(os.path.join(self.path,'images/syllables/A.gif'),self.load_sound(os.path.join(self.path,'audio/pres/preso.ogg')))
+
+		if not (teach or test):
+
+
+			self.teach_syllable(os.path.join(self.path,'images/syllables/A.gif'),self.load_sound(os.path.join(self.path,'audio/pres/presa.ogg')))
+			self.teach_syllable(os.path.join(self.path,'images/syllables/I.gif'),self.load_sound(os.path.join(self.path,'audio/pres/presi.ogg')))
+			self.teach_syllable(os.path.join(self.path,'images/syllables/KO.gif'),self.load_sound(os.path.join(self.path,'audio/pres/presko.ogg')))
+			self.teach_syllable(os.path.join(self.path,'images/syllables/ME.gif'),self.load_sound(os.path.join(self.path,'audio/pres/presme.ogg')))
+			self.teach_syllable(os.path.join(self.path,'images/syllables/RI.gif'),self.load_sound(os.path.join(self.path,'audio/pres/presri.ogg')))
+
+			self.play_instruction('audio/instr/instr13.ogg')
+
+		if not teach:
+
+			syllable_sound = {}
+			syllable_sprites = {}
+			sprites = {}
+
+			syllable_sound['a'] = a
+			syllable_sound['i'] = i
+			syllable_sound['o'] = o
+			syllable_sound['ko'] = ko
+			syllable_sound['me'] = me
+			syllable_sound['ri'] = ri
+
+			sprites['dog'] = self.load_sprites('dog')
+			sprites['seal'] = self.load_sprites('seal')
+			sprites['seagull'] = self.load_sprites('seagull')
+			sprites['crab'] = {}
+			sprites['crab']['l'] = pygame.image.load(os.path.join(self.path,'images/stage_l/crab_trans.gif'))
+			sprites['crab']['r'] = pygame.image.load(os.path.join(self.path,'images/stage_l/crab_trans.gif'))
+
+			syllable_sprites['a'] = self.load_syllable_sprites('a')
+			syllable_sprites['i'] = self.load_syllable_sprites('i')
+			syllable_sprites['o'] = self.load_syllable_sprites('o')
+			syllable_sprites['ko'] = self.load_syllable_sprites('ko')
+			syllable_sprites['me'] = self.load_syllable_sprites('me')
+			syllable_sprites['ri'] = self.load_syllable_sprites('ri')
+
+			bg = pygame.image.load(os.path.join(self.path,'images/bg/bg_beach.gif'))
+
+			log_l = Trial_Logger('test_l')
+
+			stage = OneOutOfThree(log_l,self.surface,bg,syllable_sound,syllable_sprites,sprites,os.path.join(self.path,'data/modul_l'),neo=neo)
+
+			miss = stage.start()
+			outstanding = True
+			if miss > 3:
+				miss = stage.start()
+				outstanding = False
+				if miss > 3:
+					log.add('L',res_teach,0)
+					log.save()
+					log_l.save()
+					if rep:
+						self.stop()
+					else:
+						self.end()
+			log_l.save()
+			res_test = 1
+		else:
+			res_test = -1
+
+		log.add('L',res_teach,res_test)
+		log.save()
+
+		if not (teach or test):
+			self.feedback(miss,1,outstanding)
+			self.draw(pygame.image.load(os.path.join(self.path,'images/bg/bg_wave.jpg')))
+			self.play_instruction('audio/final/final1.ogg',False)
+
+	
+	def load_sprites(self,name):
+
+		back = {}
+
+		back['l'] = pygame.image.load(os.path.join(self.path,'images/stage_l/'+name+'_left.gif'))
+		back['r'] = pygame.image.load(os.path.join(self.path,'images/stage_l/'+name+'_right.gif'))
+
+		return back
+
+	def load_syllable_sprites(self,syllable):
+
+		back = {}
+
+		back['l'] = pygame.image.load(os.path.join(self.path,'images/syllables/'+syllable+'_left_trans.gif'))
+		back['m'] = pygame.image.load(os.path.join(self.path,'images/syllables/'+syllable+'_middle_trans.gif'))
+		back['r'] = pygame.image.load(os.path.join(self.path,'images/syllables/'+syllable+'_right_trans.gif'))
+
+		return back
+
+
+class Stage_B(Stage):
+
+	def __init__(self, log, teach=False, test=False, rep=False, neo=False):
+
+		if teach or test:
+			Stage.__init__(self,False,neo)
+		else:
+			Stage.__init__(self,True,neo)
+
+		if not (teach and test):
+			a = self.load_syllable_sound('a')
+			e = self.load_syllable_sound('e')
+			i = self.load_syllable_sound('i')
+			o = self.load_syllable_sound('o')
+			fa = self.load_syllable_sound('fa')
+			ko = self.load_syllable_sound('ko')
+			me = self.load_syllable_sound('me')
+			ri = self.load_syllable_sound('ri')
+
+		if not rep:
+			if not (teach or test):
+				self.start('Modul B',os.path.join(self.path,'audio/instr/instr9b.ogg'))
+				self.teach_syllable(os.path.join(self.path,'images/syllables/E.gif'),self.load_sound(os.path.join(self.path,'audio/pres/prese.ogg')))
+				self.play_instruction('audio/instr/instr2b.ogg')
+				self.teach_syllable(os.path.join(self.path,'images/syllables/E.gif'),e['1'])
+				self.play_instruction('audio/instr/instr3b.ogg')
+
+			if not test:
+				miss = self.test_syllable('e',e,True)
+				if miss > 2:
+					miss = self.test_syllable('e',e,True)
+					if miss > 2:
+						log.add('L',0,-1)
+						log.save()
+						self.stop()
+				res_teach = 1
+			else:
+				res_teach = -1
+
+			if not (teach or test):
+				self.play_instruction('audio/misc/repeat.ogg')
+
+		else:
+			self.start('Modul D',os.path.join(self.path,'audio/instr/instr7c.ogg'))
+			res_teach = -1
+			self.teach_syllable(os.path.join(self.path,'images/syllables/A.gif'),self.load_sound(os.path.join(self.path,'audio/pres/preso.ogg')))
+
+		if not (teach or test):
+
+
+			self.teach_syllable(os.path.join(self.path,'images/syllables/A.gif'),self.load_sound(os.path.join(self.path,'audio/pres/presa.ogg')))
+			self.teach_syllable(os.path.join(self.path,'images/syllables/I.gif'),self.load_sound(os.path.join(self.path,'audio/pres/presi.ogg')))
+			self.teach_syllable(os.path.join(self.path,'images/syllables/O.gif'),self.load_sound(os.path.join(self.path,'audio/pres/preso.ogg')))
+			self.teach_syllable(os.path.join(self.path,'images/syllables/FA.gif'),self.load_sound(os.path.join(self.path,'audio/pres/presfa.ogg')))
+			self.teach_syllable(os.path.join(self.path,'images/syllables/KO.gif'),self.load_sound(os.path.join(self.path,'audio/pres/presko.ogg')))
+			self.teach_syllable(os.path.join(self.path,'images/syllables/ME.gif'),self.load_sound(os.path.join(self.path,'audio/pres/presme.ogg')))
+			self.teach_syllable(os.path.join(self.path,'images/syllables/RI.gif'),self.load_sound(os.path.join(self.path,'audio/pres/presri.ogg')))
+
+			self.play_instruction('audio/instr/instr17.ogg')
+
+		if not teach:
+
+			syllable_sound = {}
+			syllable_sprites = {}
+			sprites = {}
+
+			syllable_sound['a'] = a
+			syllable_sound['e'] = e
+			syllable_sound['i'] = i
+			syllable_sound['o'] = o
+			syllable_sound['fa'] = fa
+			syllable_sound['ko'] = ko
+			syllable_sound['me'] = me
+			syllable_sound['ri'] = ri
+
+			sprites['monster1'] = self.load_sprites('monster1')
+			sprites['monster2'] = self.load_sprites('monster2')
+			sprites['monster3'] = self.load_sprites('monster3')
+			sprites['monster4'] = self.load_sprites('monster4')
+
+			syllable_sprites['a'] = self.load_syllable_sprites('a')
+			syllable_sprites['e'] = self.load_syllable_sprites('e')
+			syllable_sprites['i'] = self.load_syllable_sprites('i')
+			syllable_sprites['o'] = self.load_syllable_sprites('o')
+			syllable_sprites['fa'] = self.load_syllable_sprites('fa')
+			syllable_sprites['ko'] = self.load_syllable_sprites('ko')
+			syllable_sprites['me'] = self.load_syllable_sprites('me')
+			syllable_sprites['ri'] = self.load_syllable_sprites('ri')
+
+			bg = pygame.image.load(os.path.join(self.path,'images/bg/bg_desert.jpg'))
+
+			log_b = Trial_Logger('test_b')
+
+			stage = OneOutOfThree(log_b,self.surface,bg,syllable_sound,syllable_sprites,sprites,os.path.join(self.path,'data/modul_b'),neo=neo)
+
+			miss = stage.start()
+			outstanding = True
+			if miss > 4:
+				miss = stage.start()
+				outstanding = False
+				if miss > 4:
+					log.add('B',res_teach,0)
+					log.save()
+					log_b.save()
+					if rep:
+						self.stop()
+					else:
+						self.end()
+			log_b.save()
+			res_test = 1
+		else:
+			res_test = -1
+
+		log.add('B',res_teach,res_test)
+		log.save()
+
+		if not (teach or test):
+			self.feedback(miss,2,outstanding)
+			self.draw(pygame.image.load(os.path.join(self.path,'images/bg/bg_wave.jpg')))
+			self.play_instruction('audio/final/final1.ogg',False)
+
+	
+	def load_sprites(self,name):
+
+		back = {}
+
+		back['l'] = pygame.image.load(os.path.join(self.path,'images/stage_b/'+name+'_left.gif'))
+		back['r'] = pygame.image.load(os.path.join(self.path,'images/stage_b/'+name+'_right.gif'))
+
+		return back
+
+	def load_syllable_sprites(self,syllable):
+
+		back = {}
+
+		back['l'] = pygame.image.load(os.path.join(self.path,'images/syllables/'+syllable+'_left_trans.gif'))
+		back['m'] = pygame.image.load(os.path.join(self.path,'images/syllables/'+syllable+'_middle_trans.gif'))
+		back['r'] = pygame.image.load(os.path.join(self.path,'images/syllables/'+syllable+'_right_trans.gif'))
+
+		return back

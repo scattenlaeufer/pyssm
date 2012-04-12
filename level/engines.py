@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import pygame, random, sys, string
 from helpers import Stop_Watch, Trial_Data
-from helpers.log import Trail_Logger
+from helpers.log import Trial_Logger
 from helpers.debug import Debugger
 from pygame.locals import *
 
@@ -23,7 +23,7 @@ class Engine:
 		self.syllables_called = {}
 
 		if syllables != None:
-			self.n_syllables = len(self.syllables)
+			self.n_syllables = len(syllables)
 			self.syllables = syllables.keys()
 			for syllable in self.syllables:
 				self.syllables_called[syllable] = 0
@@ -51,7 +51,7 @@ class Engine:
 			if event.key == K_ESCAPE:
 				pygame.quit()
 				sys.exit()
-			if event.key == ord('f'):
+			if event.key == K_F10:
 				self.toggle_fullscreen()
 
 
@@ -218,7 +218,7 @@ class OneOutOfTwo(Engine):
 
 		sw = Stop_Watch()
 		self.reset_syllables_called()
-		self.log.set_top('trail_nr\tsyllable_l\tsyllable_r\tsound\tkey_pressed\tresponse\tresponsetime\tsprite')
+		self.log.set_top('trial_nr\tsyllable_l\tsyllable_r\tsound\tkey_pressed\tresponse\tresponsetime\tsprite')
 
 		if not self.random_order:
 			trials = Trial_Data(self.order)
@@ -299,11 +299,11 @@ class OneOutOfTwo(Engine):
 					self.standart_event(event)
 					if event.type == KEYDOWN:
 						try:
-							if self.left.find(chr(event.key))>= 0:
+							if self.left.find(unichr(event.key))>= 0:
 								sw.stop()
 								press = 0
 								key_pressed = True
-							if self.right.find(chr(event.key)) >=0:
+							if self.right.find(unichr(event.key)) >=0:
 								sw.stop()
 								press = 1
 								key_pressed = True
@@ -369,7 +369,7 @@ class Space_Engine(Engine):
 	def start(self):
 
 		sw = Stop_Watch()
-		self.log.set_top('trail_nr\tsyllable_l\tsyllable_r\tsound\tkey_pressed\tresponse\tresponsetime')
+		self.log.set_top('trial_nr\tsyllable_l\tsyllable_r\tsound\tkey_pressed\tresponse\tresponsetime')
 
 		trials = Trial_Data(self.order)
 		n = trials.get_n_trials()
@@ -417,11 +417,11 @@ class Space_Engine(Engine):
 					self.standart_event(event)
 					if event.type == KEYDOWN:
 						try:
-							if self.left.find(chr(event.key)) >= 0:
+							if self.left.find(unichr(event.key)) >= 0:
 								sw.stop()
 								pressed = 0
 								key_pressed = True
-							elif self.right.find(chr(event.key)) >= 0:
+							elif self.right.find(unichr(event.key)) >= 0:
 								sw.stop()
 								pressed = 1
 								key_pressed = 1
@@ -467,7 +467,7 @@ class Balloon_Engine(Engine):
 	def start(self):
 
 		sw = Stop_Watch()
-		self.log.set_top('trail_nr\tsyllable_l\tsyllable_m\tsyllable_r\tsound\tkey_pressed\tresponse\trespones_time')
+		self.log.set_top('trial_nr\tsyllable_l\tsyllable_m\tsyllable_r\tsound\tkey_pressed\tresponse\trespones_time')
 		trials = Trial_Data(self.order)
 		n = trials.get_n_trials()
 		side = []
@@ -540,11 +540,11 @@ class Balloon_Engine(Engine):
 					self.standart_event(event)
 					if event.type == KEYDOWN:
 						try:
-							if chr(event.key) == 'e':
+							if self.left.find(unichr(event.key)) >= 0:
 								sw.stop()
 								key_pressed = True
 								pressed = 0
-							elif chr(event.key) == 'n':
+							elif self.right.find(unichr(event.key)) >= 0:
 								sw.stop()
 								key_pressed = True
 								pressed = 2
@@ -608,12 +608,11 @@ class Balloon_Engine(Engine):
 
 class CatchMeIfYouCan(Engine):
 
-	def __init__(self,log,surface,bg,syllable_sounds,miss,sprites,order):
+	def __init__(self,log,surface,bg,syllable_sounds,sprites,order,neo=True):
 
-		Engine.__init__(self,surface,bg,None,syllable_sounds,None,False,order,True)
+		Engine.__init__(self,surface,bg,None,syllable_sounds,None,False,order,neo)
 		self.log = log
 		self.sprites = sprites
-		self.miss = miss
 
 	def play_instruction(self,instr1,instr2,instr_image):
 		self.surface.blit(instr_image,(0,0))
@@ -621,12 +620,12 @@ class CatchMeIfYouCan(Engine):
 		instr1.play()
 		pygame.time.wait(5000)
 		instr2.play()
-		pygame.time.wait(15000)
+		pygame.time.wait(18000)
 	
 	def start(self):
 
 		self.sw = Stop_Watch()
-		self.log.set_top('tril_nr\tsound\tsprite\tdirection\tpressed\tresponse_time')
+		self.log.set_top('trial_nr\tsound\tsprite\tdirection\tpressed\tresponse_time')
 		trials = Trial_Data(self.order)
 		n = trials.get_n_trials()
 		miss = 0
@@ -667,20 +666,17 @@ class CatchMeIfYouCan(Engine):
 		return miss
 
 
-
-
-	
 	def fly_through(self,sprite,direction,sound):
 
 		size_sprite = sprite.get_size()[0]
 		size_surface = self.surface.get_size()[0]
 
-		if direction == 'l':
-			x0 = size_surface
-			dx = -5
-		else:
+		if direction == 'r':
 			x0 = -1*size_sprite
 			dx = 5
+		else:
+			x0 = size_surface
+			dx = -5
 
 		s = Engine.Sprite(self.surface,sprite,(x0,self.position_center_height(sprite)))
 		move = True
@@ -695,6 +691,7 @@ class CatchMeIfYouCan(Engine):
 				move = False
 			self.mainClock.tick(36)
 
+		pygame.event.clear()
 		self.sw.start()
 		sound.play()
 
@@ -705,11 +702,11 @@ class CatchMeIfYouCan(Engine):
 			self.surface.blit(self.bg,(0,0))
 			s.draw()
 			pygame.display.update()
-			if direction == 'l':
-				if s.get_position()[0] < -1*size_sprite:
+			if direction == 'r':
+				if s.get_position()[0] > size_surface + size_sprite:
 					move = False
 			else:
-				if s.get_position()[0] > size_surface + size_sprite:
+				if s.get_position()[0] < -1*size_sprite:
 					move = False
 
 			for event in pygame.event.get():
@@ -724,3 +721,136 @@ class CatchMeIfYouCan(Engine):
 		self.sw.stop()
 
 		return pressed
+
+
+class OneOutOfThree(Engine):
+
+	def __init__(self,log,surface,bg,syllable_sound,syllable_sprites,sprites,order,neo=True):
+
+		Engine.__init__(self,surface,bg,None,syllable_sound,syllable_sprites,False,order,neo)
+		
+		self.log = log
+		self.sprites = sprites
+
+
+	def start(self):
+
+		sw = Stop_Watch()
+		self.log.set_top('trial_nr\tsyllable_l\tsyllable_m\tsyllable_r\tsound\tkey_pressed\tresponse\tresponsetime')
+		trials = Trial_Data(self.order)
+		n = trials.get_n_trials()
+		side = []
+		miss = 0
+
+		for i in range(n):
+			size = self.surface.get_size()
+			self.bg = pygame.transform.scale(self.bg,size)
+			self.surface.blit(self.bg,(0,0))
+
+			accept = False
+			while not accept:
+				trial_index, trial = trials.get_trial()
+				syllable = trial[1]
+				syllable_sprite = trial[2],trial[3],trial[4]
+				if syllable_sprite[0] == syllable:
+					correct = 0
+				elif syllable_sprite[1] == syllable:
+					correct = 1
+				else:
+					correct = 2
+				if len(side) == 0 or trials.get_n_trials() <= 1 or i > 20:
+					side.append(correct)
+					accept = True
+				elif side[len(side)-1] != correct:
+					side = [correct]
+					accept = True
+				elif len(side) < 2:
+					side.append(correct)
+					accept = True
+
+			trials.accept(trial_index)
+#			print(syllable+'\t'+str(correct)+'\t'+str(syllable_sprite))
+			sprite = self.sprites[trial[5]][trial[6]]
+			if trial[6] == 'l':
+				direction = 1
+			else:
+				direction = 0
+			self.enter_sprite(sprite,direction)
+
+			self.surface.blit(self.syllable_images[syllable_sprite[0]]['l'],(size[0]/4-self.syllable_images[syllable_sprite[0]]['l'].get_size()[0]/2,self.surface.get_size()[1]/3))
+			self.surface.blit(self.syllable_images[syllable_sprite[1]]['m'],(self.position_center_width(self.syllable_images[syllable_sprite[1]]['m']),self.surface.get_size()[1]/3))
+			self.surface.blit(self.syllable_images[syllable_sprite[2]]['r'],(3*size[0]/4-self.syllable_images[syllable_sprite[2]]['r'].get_size()[0]/2,self.surface.get_size()[1]/3))
+			pygame.display.update()
+
+			self.syllable_sounds[trial[1]][str(random.randint(1,3))].play()
+			sw.start()
+
+			key_pressed = False
+			repeat = True
+			pressed = 0
+			pygame.event.clear()
+
+			while repeat:
+
+				for event in pygame.event.get():
+					self.standart_event(event)
+					if event.type == KEYDOWN:
+						try:
+							if self.left.find(unichr(event.key)) >= 0:
+								sw.stop()
+								pressed = 0
+								key_pressed = True
+							elif self.right.find(unichr(event.key)) >= 0:
+								sw.stop()
+								pressed = 2
+								key_pressed = True
+							elif event.key == K_SPACE:
+								sw.stop()
+								pressed = 1
+								key_pressed = True
+						except UnicodeDecodeError:
+							print(event.key)
+
+				if key_pressed:
+					log_line = [trial[0],trial[2],trial[3],trial[4],trial[1],pressed,int(pressed==correct),sw.get_time()]
+					self.log.add(log_line)
+					self.surface.blit(self.bg,(0,0))
+					self.draw_sprite(sprite)
+					if correct == 0:
+						self.surface.blit(self.syllable_images[syllable_sprite[0]]['l'],(size[0]/4-self.syllable_images[syllable_sprite[0]]['l'].get_size()[0]/2,self.surface.get_size()[1]/3))
+					elif correct == 1:
+						self.surface.blit(self.syllable_images[syllable_sprite[1]]['m'],(self.position_center_width(self.syllable_images[syllable_sprite[1]]['m']),self.surface.get_size()[1]/3))
+					else:
+						self.surface.blit(self.syllable_images[syllable_sprite[2]]['r'],(3*size[0]/4-self.syllable_images[syllable_sprite[2]]['r'].get_size()[0]/2,self.surface.get_size()[1]/3))
+					pygame.display.update()
+
+					if pressed == correct:
+						self.syllable_sounds[syllable_sprite[correct]]['pos'+str(random.randint(1,4))].play()
+						pygame.time.wait(4000)
+						repeat = False
+					else:
+						self.syllable_sounds[syllable_sprite[correct]]['neg'+str(random.randint(1,2))].play()
+						pygame.time.wait(4500)
+						miss += 1
+						if correct == 0:
+							self.surface.blit(self.syllable_images[syllable_sprite[1]]['m'],(self.position_center_width(self.syllable_images[syllable_sprite[1]]['m']),self.surface.get_size()[1]/3))
+							self.surface.blit(self.syllable_images[syllable_sprite[2]]['r'],(3*size[0]/4-self.syllable_images[syllable_sprite[2]]['r'].get_size()[0]/2,self.surface.get_size()[1]/3))
+						elif correct == 1:
+							self.surface.blit(self.syllable_images[syllable_sprite[0]]['l'],(size[0]/4-self.syllable_images[syllable_sprite[0]]['l'].get_size()[0]/2,self.surface.get_size()[1]/3))
+							self.surface.blit(self.syllable_images[syllable_sprite[2]]['r'],(3*size[0]/4-self.syllable_images[syllable_sprite[2]]['r'].get_size()[0]/2,self.surface.get_size()[1]/3))
+						else:
+							self.surface.blit(self.syllable_images[syllable_sprite[0]]['l'],(size[0]/4-self.syllable_images[syllable_sprite[0]]['l'].get_size()[0]/2,self.surface.get_size()[1]/3))
+							self.surface.blit(self.syllable_images[syllable_sprite[1]]['m'],(self.position_center_width(self.syllable_images[syllable_sprite[1]]['m']),self.surface.get_size()[1]/3))
+						pygame.display.update()
+						self.syllable_sounds[syllable_sprite[correct]][str(random.randint(1,3))].play()
+						sw.start()
+						key_pressed = False
+						pygame.event.clear()
+
+				self.mainClock.tick(40)
+
+
+			self.exit_sprite(sprite,direction)
+
+		return miss
+
