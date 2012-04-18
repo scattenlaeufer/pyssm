@@ -55,8 +55,8 @@ class Log_Handler:
 class Trial_Logger:
 
 	def __init__(self,name):
-		self.name = os.path.join(__file__[:-7],'trail_log/',name)
-		if os.path.isdir(os.path.join(__file__[:-7],'trail_log')):
+		self.name = os.path.join(__file__[:-7],'trial_log/',name)
+		if os.path.isdir(os.path.join(__file__[:-7],'trial_log')):
 			try:
 				with open(self.name, mode='r') as log_file:
 					self.log = log_file.read()
@@ -72,7 +72,7 @@ class Trial_Logger:
 				self.cc = 0
 		else:
 			self.lines = None
-			os.mkdir(os.path.join(__file__[:-7],'trail_log'))
+			os.mkdir(os.path.join(__file__[:-7],'trial_log'))
 			self.log = ''
 			self.cc = 0
 

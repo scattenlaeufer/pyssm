@@ -714,6 +714,7 @@ class CatchMeIfYouCan(Engine):
 				if event.type == KEYDOWN:
 					if event.key == K_SPACE:
 						self.sw.stop()
+						dx = dx * 3
 						pressed = True
 					else:
 						print(chr(event.key))

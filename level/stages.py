@@ -1142,7 +1142,7 @@ class Stage_L(Stage):
 			if not test:
 				miss = self.test_syllable('o',o,True)
 				if miss > 2:
-					miss = self.test_syllble('o'.o,True)
+					miss = self.test_syllable('o',o,True)
 					if miss > 2:
 						log.add('L',0,-1)
 						log.save()

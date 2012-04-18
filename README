@@ -4,7 +4,7 @@ written by Björn Guth at Klinik für Psychiatrie, Psychosomatik und
 Psychotherapie des Kindes- und Jugendalters at Universtitätsklinikum 
 Aachen
 
-version 0.1
+version 0.2.2
 
 PySSM is a small game to teach children eight syllables needed for a
 study on the early symptoms of dyslexia
@@ -20,6 +20,7 @@ To install pyssm on linux, go in a shell to the directory with the source code a
 
 To install pyssm on windows, use someting like cmd to go to the directiory with the source code and use the following command:
 	setup.py install
+
 or build with
 	setup.py bdist_wininst
 a .exe or with
