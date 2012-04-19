@@ -4,7 +4,7 @@ from os import path
 import shutil
 
 setup(name='pyssm',
-		version='0.2.2',
+		version='0.2.3',
 		description='Small game to teach eight syllables',
 		author='Bjoern Guth',
 		author_email='bjoern.guth@rwth-aachen.de',

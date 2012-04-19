@@ -67,7 +67,7 @@ class Trial_Logger:
 					except ValueError:
 						self.cc = 0
 			except IOError:
-				self.lines = None
+				self.lines = []
 				self.log = ''
 				self.cc = 0
 		else:
@@ -81,9 +81,11 @@ class Trial_Logger:
 		top = 'cycle_count\t'+top
 		if self.log == '':
 			self.log += top
+			self.lines.append(top)
 		else:
 			if self.lines[0] != top:
 				self.log += '\n' + top
+
 
 
 	def __str__(self):
