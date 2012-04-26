@@ -113,7 +113,7 @@ class Stage:
 
 	def end(self):
 		
-		image = pygame.image.load('images/bg/bg_wave.jpg')
+		image = pygame.image.load(os.path.join(self.path,'images/bg/bg_wave.jpg'))
 		self.surface.blit(image,(0,0))
 		pygame.display.update()
 		self.play_instruction('audio/final/final1.ogg',False)
@@ -623,7 +623,7 @@ class Stage_U(Stage):
 					else:
 						log.add('U',res_teach,0)
 						log.save()
-						f.end()
+						self.end()
 			res_test = 1
 			log_u.save()
 		else:
@@ -792,7 +792,7 @@ class Stage_Q(Stage):
 					miss = self.test_syllable('fa',fa)
 					if miss > 2:
 						log.add('Q',0,-1)
-						los.save()
+						log.save()
 						self.stop()
 				res_teach = 1
 			else:
@@ -859,7 +859,7 @@ class Stage_Q(Stage):
 					log.add('Q',res_teach,0)
 					log.save()
 					log_q.save()
-					if rep:
+					if repeat:
 						self.stop()
 					else:
 						self.end()

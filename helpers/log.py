@@ -71,7 +71,7 @@ class Trial_Logger:
 				self.log = ''
 				self.cc = 0
 		else:
-			self.lines = None
+			self.lines = []
 			os.mkdir(os.path.join(__file__[:-7],'trial_log'))
 			self.log = ''
 			self.cc = 0
