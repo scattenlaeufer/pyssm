@@ -8,7 +8,6 @@ from pygame.locals import *
 class Engine:
 
 	def __init__(self, surface, bg, syllables, syllable_sounds, syllable_images, random_order, order, neo=True):
-		self.miss = 0
 		self.frames = 40
 		self.surface = surface
 		self.bg = bg
@@ -182,6 +181,8 @@ class Engine:
 		for syllable in self.syllables:
 			self.syllables_called[syllable] = 0
 
+#	Class used to give easy tools to move sprites
+
 	class Sprite:
 
 		def __init__(self,surface,sprite,(x,y)):
@@ -205,6 +206,14 @@ class Engine:
 			return self.pic
 
 
+#	Engine used in modules A and U
+#	in:
+#		log: Log file for this module. type Trial_Logger
+#		surface: the surface of which the graphics of the game should be drawn. type pygame.Surface
+#		bg: the background image of the module. type pygame.Surface
+#		sprites: a list of all sprites used in this module
+#		syllables: a list of all syllables
+
 class OneOutOfTwo(Engine):
 
 	def __init__(self, log, surface, bg, sprites, syllables, syllable_images, syllable_sounds, random_order=True, order=None, neo=True):
@@ -216,6 +225,7 @@ class OneOutOfTwo(Engine):
 
 	def start(self,n=10):
 
+		miss = 0
 		sw = Stop_Watch()
 		self.reset_syllables_called()
 		self.log.set_top('trial_nr\tsyllable_l\tsyllable_r\tsound\tkey_pressed\tresponse\tresponsetime\tsprite')
@@ -241,9 +251,14 @@ class OneOutOfTwo(Engine):
 				sprite_str = self.sprites.keys()[random.randint(0,self.n_sprites-1)]
 
 				check = True
+				i = 0
 				while check:
+					i += 1
 					syllable = self.choose_two(self.n_syllables)
-					check = not self.check_correct_syllable(self.syllables[syllable[correct]])
+					if i < 20:
+						check = not self.check_correct_syllable(self.syllables[syllable[correct]])
+					else:
+						check = False
 				syllable_str = [self.syllables[syllable[0]],self.syllables[syllable[1]]]
 
 			else:
@@ -340,7 +355,7 @@ class OneOutOfTwo(Engine):
 						self.draw_syllable_right(self.syllable_images[syllable_str[1]]['r'])
 					pygame.display.update()
 					pygame.time.wait(4500)
-					self.miss += 1
+					miss += 1
 					
 					if correct == 0:
 						self.draw_syllable_right(self.syllable_images[syllable_str[1]]['r'])
@@ -354,7 +369,7 @@ class OneOutOfTwo(Engine):
 				self.mainClock.tick(40)
 			self.exit_sprite(sprite,direction)
 
-		return self.miss
+		return miss
 
 
 class Space_Engine(Engine):
@@ -717,7 +732,10 @@ class CatchMeIfYouCan(Engine):
 						dx = dx * 3
 						pressed = True
 					else:
-						print(chr(event.key))
+						try:
+							print(chr(event.key))
+						except ValueError:
+							print('blubb')
 			self.mainClock.tick(36)
 		self.sw.stop()
 

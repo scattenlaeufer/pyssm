@@ -399,10 +399,8 @@ class Stage_A(Stage):
 				self.play_instruction('audio/instr/instr3.ogg')
 
 			if not test:
-				miss = 0
 				miss = self.test_syllable('ko',self.lo)
 				if miss > 2 and not teach:
-					miss = 0
 					miss = self.test_syllable('ko',self.lo)
 					repitition += 1
 					if miss > 2:
@@ -421,14 +419,11 @@ class Stage_A(Stage):
 				self.play_instruction('audio/instr/instr3.ogg')
 
 			if not test:
-				miss = 0
 				miss = self.test_syllable('me',self.ma)
 				if miss > 2 and not teach:
-					miss = 0
 					repitition += 1
 					miss = self.test_syllable('me',self.ma)
 					if miss > 2:
-
 						log.add('A',0,-1)
 						log.save()
 						self.stop()
@@ -488,12 +483,10 @@ class Stage_A(Stage):
 			log_a = Trial_Logger('test_a')
 			stage = OneOutOfTwo(log_a,self.surface,bg_stage,sprites,syllables,syllable_images,syllable_sound,random_order=False,order=os.path.join(self.path,'data/modul_a'),neo=neo)
 
-			miss = 0
 			miss = stage.start(12)
 			outstanding = True
 			if miss > 2:
 				if repitition == 0:
-					miss = 0
 					miss = stage.start(12)
 					outstanding = False
 					if miss > 2:
@@ -607,11 +600,9 @@ class Stage_U(Stage):
 			
 			log_u = Trial_Logger('test_u')
 			stage = OneOutOfTwo(log_u,self.surface,bg_stage,sprites,syllables,syllable_images,syllable_sound,random_order=False,order=os.path.join(self.path,'data/modul_u'),neo=neo)
-			miss = 0
 			miss = stage.start(15)
 			outstanding = True
 			if miss > 4 and not test:
-				miss = 0
 				miss = stage.start(15)
 				outstanding = False
 				if miss > 4:
@@ -1157,7 +1148,7 @@ class Stage_L(Stage):
 		else:
 			self.start('Modul M',os.path.join(self.path,'audio/instr/instr7c.ogg'))
 			res_teach = -1
-			self.teach_syllable(os.path.join(self.path,'images/syllables/A.gif'),self.load_sound(os.path.join(self.path,'audio/pres/preso.ogg')))
+			self.teach_syllable(os.path.join(self.path,'images/syllables/O.gif'),self.load_sound(os.path.join(self.path,'audio/pres/preso.ogg')))
 
 		if not (teach or test):
 
@@ -1168,7 +1159,8 @@ class Stage_L(Stage):
 			self.teach_syllable(os.path.join(self.path,'images/syllables/ME.gif'),self.load_sound(os.path.join(self.path,'audio/pres/presme.ogg')))
 			self.teach_syllable(os.path.join(self.path,'images/syllables/RI.gif'),self.load_sound(os.path.join(self.path,'audio/pres/presri.ogg')))
 
-			self.play_instruction('audio/instr/instr13.ogg')
+			self.draw(pygame.image.load(os.path.join(self.path,'images/bg/bg_smiley.jpg')))
+			self.play_instruction('audio/instr/instr13.ogg',False)
 
 		if not teach:
 
@@ -1206,6 +1198,7 @@ class Stage_L(Stage):
 			miss = stage.start()
 			outstanding = True
 			if miss > 3:
+				print('duraindeutiraneduiranedurainedutrainedutrianedutraineduiatrneduitarnedutraineutirane')
 				miss = stage.start()
 				outstanding = False
 				if miss > 3:
@@ -1295,7 +1288,7 @@ class Stage_B(Stage):
 		else:
 			self.start('Modul D',os.path.join(self.path,'audio/instr/instr7c.ogg'))
 			res_teach = -1
-			self.teach_syllable(os.path.join(self.path,'images/syllables/A.gif'),self.load_sound(os.path.join(self.path,'audio/pres/preso.ogg')))
+			self.teach_syllable(os.path.join(self.path,'images/syllables/E.gif'),self.load_sound(os.path.join(self.path,'audio/pres/prese.ogg')))
 
 		if not (teach or test):
 
@@ -1307,8 +1300,8 @@ class Stage_B(Stage):
 			self.teach_syllable(os.path.join(self.path,'images/syllables/KO.gif'),self.load_sound(os.path.join(self.path,'audio/pres/presko.ogg')))
 			self.teach_syllable(os.path.join(self.path,'images/syllables/ME.gif'),self.load_sound(os.path.join(self.path,'audio/pres/presme.ogg')))
 			self.teach_syllable(os.path.join(self.path,'images/syllables/RI.gif'),self.load_sound(os.path.join(self.path,'audio/pres/presri.ogg')))
-
-			self.play_instruction('audio/instr/instr17.ogg')
+			self.draw(pygame.image.load(os.path.join(self.path,'images/bg/bg_smiley.jpg')))
+			self.play_instruction('audio/instr/instr17.ogg',False)
 
 		if not teach:
 

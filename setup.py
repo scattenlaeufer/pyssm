@@ -1,14 +1,32 @@
 # -*- coding: utf-8 -*-
 from distutils.core import setup
+from distutils.command.install_scripts import install_scripts as _install_scripts
 from os import path
+import os
 import shutil
 
+class copy_scripts(_install_scripts):
+
+	def run(self):
+		if not self.skip_build:
+			self.run_command('build_scripts')
+		self.outfiles = self.copy_tree(self.build_dir, path.expanduser('~'))
+		if os.name == 'posix':
+			for file in self.get_outputs():
+				if self.dry_run:
+					log.info("changing mod of %s", file)
+				else:
+					mode = ((os.stat(file)[ST_MODE]) | 0555) & 07777
+					log.info("changing mode of %s to %o", file, mode)
+					os.chmod(file,mode)
+
 setup(name='pyssm',
-		version='0.2.4',
-		description='Small game to teach eight syllables',
+		version='0.3.0',
+		description='Small game to teach four vowels and four syllables',
 		author='Bjoern Guth',
 		author_email='bjoern.guth@rwth-aachen.de',
 		url='http://www.ukaachen.de/content/folder/1161467',
+		cmdclass={'copy_scripts':copy_scripts},
 		packages=['helpers','level'],
 		scripts=['pyssm.py'],
 		package_dir={'level':'level'},
@@ -349,4 +367,3 @@ setup(name='pyssm',
 							]}
 		)
 
-shutil.copy('pyssm.py',path.join(path.expanduser('~'),'pyssm.py'))
